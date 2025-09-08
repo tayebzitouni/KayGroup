@@ -490,9 +490,9 @@
             label2.ForeColor = Color.Black;
             label2.Location = new Point(302, 521);
             label2.Name = "label2";
-            label2.Size = new Size(48, 17);
+            label2.Size = new Size(41, 17);
             label2.TabIndex = 84;
-            label2.Text = "Utiliser";
+            label2.Text = "utilisé";
             // 
             // label13
             // 

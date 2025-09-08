@@ -164,10 +164,10 @@ namespace freelanceProject1.Presentation_Layer.forms
 
         private void hi_Load(object sender, EventArgs e)
         {
-           
+
             usefulFunction.UsefulFuncitonClass.LoadComboBoxOfAllComptesBancaires(guna2ComboBox2);
             guna2ComboBox2.SelectedIndex = -1;
-           
+
             guna2DataGridView1.EnableHeadersVisualStyles = false;
             guna2DataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.White; // Your preferred header color
             guna2DataGridView1.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.White;
@@ -177,7 +177,7 @@ namespace freelanceProject1.Presentation_Layer.forms
             guna2DateTimePicker1.FillColor = Color.White;
             guna2DateTimePicker1.BorderColor = Color.Black;
             guna2DateTimePicker1.HoverState.FillColor = Color.FromArgb(0, Color.White);
-           
+
 
 
 
@@ -271,8 +271,9 @@ namespace freelanceProject1.Presentation_Layer.forms
                                 reference = sys.referenc,
                                 Amount = sys.Amount,
                                 Status = "🟣 In System only",
+                                Reason  = $"💸 Different amount than bank: {bank.Amount}",
                                 Discriminator = sys.Discriminator,
-                                Reason = $"💸 Different amount than bank: {bank.Amount}"
+                               
                             });
 
                             // نضيف أيضاً نسخة البنك لتكتمل المقارنة
@@ -536,7 +537,7 @@ namespace freelanceProject1.Presentation_Layer.forms
 
         private void guna2ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-           
+
         }
 
         private void guna2DateTimePicker1_ValueChanged(object sender, EventArgs e)

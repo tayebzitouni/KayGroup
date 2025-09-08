@@ -333,9 +333,9 @@
             label6.ForeColor = Color.Black;
             label6.Location = new Point(275, 239);
             label6.Name = "label6";
-            label6.Size = new Size(44, 17);
+            label6.Size = new Size(66, 17);
             label6.TabIndex = 58;
-            label6.Text = "Phone";
+            label6.Text = "telephone";
             // 
             // AjouterUtilisatuer
             // 

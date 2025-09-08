@@ -191,7 +191,6 @@
             guna2TabControl1.TabIndex = 67;
             guna2TabControl1.TabMenuBackColor = Color.White;
             guna2TabControl1.TabMenuOrientation = Guna.UI2.WinForms.TabMenuOrientation.HorizontalTop;
-            guna2TabControl1.TabMenuVisible = false;
             guna2TabControl1.TabStop = false;
             guna2TabControl1.SelectedIndexChanged += guna2TabControl1_SelectedIndexChanged;
             // 
@@ -199,9 +198,9 @@
             // 
             tabPage1.BackColor = Color.White;
             tabPage1.Controls.Add(guna2GradientPanel1);
-            tabPage1.Location = new Point(4, 5);
+            tabPage1.Location = new Point(4, 47);
             tabPage1.Name = "tabPage1";
-            tabPage1.Size = new Size(583, 561);
+            tabPage1.Size = new Size(583, 519);
             tabPage1.TabIndex = 2;
             tabPage1.Text = "Payment From Client";
             // 
@@ -285,9 +284,9 @@
             label7.ForeColor = Color.Black;
             label7.Location = new Point(280, 92);
             label7.Name = "label7";
-            label7.Size = new Size(38, 17);
+            label7.Size = new Size(45, 17);
             label7.TabIndex = 120;
-            label7.Text = "devis";
+            label7.Text = "devise";
             // 
             // guna2ComboBox2
             // 
@@ -620,7 +619,7 @@
             guna2ImageButton1.ImageOffset = new Point(0, 0);
             guna2ImageButton1.ImageRotate = 0F;
             guna2ImageButton1.ImageSize = new Size(24, 24);
-            guna2ImageButton1.Location = new Point(172, 771);
+            guna2ImageButton1.Location = new Point(217, 771);
             guna2ImageButton1.Name = "guna2ImageButton1";
             guna2ImageButton1.PressedState.ImageSize = new Size(24, 24);
             guna2ImageButton1.ShadowDecoration.CustomizableEdges = customizableEdges9;
@@ -634,9 +633,9 @@
             label11.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label11.Location = new Point(6, 780);
             label11.Name = "label11";
-            label11.Size = new Size(166, 17);
+            label11.Size = new Size(210, 17);
             label11.TabIndex = 103;
-            label11.Text = "Click Here To choose Files :";
+            label11.Text = "Cliquez ici pour choisir des fichiers";
             // 
             // flowLayoutPanel1
             // 
@@ -848,10 +847,10 @@
             // tabPage3
             // 
             tabPage3.Controls.Add(guna2GradientPanel3);
-            tabPage3.Location = new Point(4, 5);
+            tabPage3.Location = new Point(4, 47);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(583, 561);
+            tabPage3.Size = new Size(583, 519);
             tabPage3.TabIndex = 4;
             tabPage3.Text = "Autre Payment";
             tabPage3.UseVisualStyleBackColor = true;
@@ -976,7 +975,7 @@
             guna2ImageButton3.ImageOffset = new Point(0, 0);
             guna2ImageButton3.ImageRotate = 0F;
             guna2ImageButton3.ImageSize = new Size(24, 24);
-            guna2ImageButton3.Location = new Point(169, 339);
+            guna2ImageButton3.Location = new Point(214, 339);
             guna2ImageButton3.Name = "guna2ImageButton3";
             guna2ImageButton3.PressedState.ImageSize = new Size(24, 24);
             guna2ImageButton3.ShadowDecoration.CustomizableEdges = customizableEdges28;
@@ -990,9 +989,9 @@
             label18.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label18.Location = new Point(4, 349);
             label18.Name = "label18";
-            label18.Size = new Size(166, 17);
+            label18.Size = new Size(210, 17);
             label18.TabIndex = 103;
-            label18.Text = "Click Here To choose Files :";
+            label18.Text = "Cliquez ici pour choisir des fichiers";
             // 
             // flowLayoutPanel3
             // 

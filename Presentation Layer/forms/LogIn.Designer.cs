@@ -36,7 +36,6 @@
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges6 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges7 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges8 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
-            label5 = new Label();
             label6 = new Label();
             guna2TextBox3 = new Guna.UI2.WinForms.Guna2TextBox();
             guna2TextBox4 = new Guna.UI2.WinForms.Guna2TextBox();
@@ -49,17 +48,6 @@
             guna2Panel1.SuspendLayout();
             SuspendLayout();
             // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.BackColor = Color.Transparent;
-            label5.ForeColor = Color.Black;
-            label5.Location = new Point(260, 432);
-            label5.Name = "label5";
-            label5.Size = new Size(143, 15);
-            label5.TabIndex = 13;
-            label5.Text = "Do You Forget Password ?";
-            // 
             // label6
             // 
             label6.AutoSize = true;
@@ -68,9 +56,9 @@
             label6.ForeColor = Color.Navy;
             label6.Location = new Point(27, 42);
             label6.Name = "label6";
-            label6.Size = new Size(376, 37);
+            label6.Size = new Size(505, 37);
             label6.TabIndex = 9;
-            label6.Text = "Log In To Your Account";
+            label6.Text = "Connectez-vous à votre compte";
             // 
             // guna2TextBox3
             // 
@@ -148,9 +136,9 @@
             label2.ForeColor = Color.White;
             label2.Location = new Point(97, 165);
             label2.Name = "label2";
-            label2.Size = new Size(480, 59);
+            label2.Size = new Size(381, 59);
             label2.TabIndex = 15;
-            label2.Text = "Welcome back ...";
+            label2.Text = "Bon retour ...";
             // 
             // guna2Panel1
             // 
@@ -160,7 +148,6 @@
             guna2Panel1.Controls.Add(label4);
             guna2Panel1.Controls.Add(label3);
             guna2Panel1.Controls.Add(label1);
-            guna2Panel1.Controls.Add(label5);
             guna2Panel1.Controls.Add(label6);
             guna2Panel1.Controls.Add(guna2TextBox4);
             guna2Panel1.Controls.Add(guna2Button2);

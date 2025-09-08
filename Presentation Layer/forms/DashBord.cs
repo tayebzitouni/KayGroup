@@ -1,4 +1,4 @@
-﻿using BusinessAccessLayer;
+﻿using BussinessAcesssLayer;
 using BussinessAcesssLayer;
 using DataAccessLayer;
 using Guna.UI2.WinForms;
@@ -289,6 +289,8 @@ namespace freelanceProject1.Presentation_Layer
 
         private void DrawSingleFeatureChart(string featureType, List<EntitySummary> data)
         {
+            if (data == null)
+                return;
             for (int i = guna2Panel4.Controls.Count - 1; i >= 0; i--)
             {
                 if (!(guna2Panel4.Controls[i] is ComboBox))
@@ -317,21 +319,15 @@ namespace freelanceProject1.Presentation_Layer
             area.AxisX.MajorGrid.Enabled = false;
             area.AxisY.MajorGrid.LineColor = Color.LightGray;
 
-            double maxValue = featureType switch
-            {
-                "Chiffre d'affaires" => (double)data.Max(e => e.ChiffreAffaire),
-                "Charges" => (double)data.Max(e => e.Charges),
-                "Rsultat" => (double)data.Max(e => e.Resultat),
-                _ => 0
-            };
+            double maxValue = (double)data
+    .Select(e => e.ChiffreAffaire)
+    .DefaultIfEmpty(0)
+    .Max();
 
-            double minValue = featureType switch
-            {
-                "Chiffre d'affaires" => (double)data.Min(e => e.ChiffreAffaire),
-                "Charges" => (double)data.Min(e => e.Charges),
-                "Rsultat" => (double)data.Min(e => e.Resultat),
-                _ => 0
-            };
+            double minValue = (double)data
+                .Select(e => e.ChiffreAffaire)
+                .DefaultIfEmpty(0)
+                .Min();
 
             if (maxValue == 0 && minValue == 0)
             {
@@ -550,8 +546,8 @@ namespace freelanceProject1.Presentation_Layer
         private async void DashBord_Load(object sender, EventArgs e)
         {
             label25.Text = SettingsService.GetName();
-            label26.Text = BussinessAcesssLayer.UtilisatuerBussiness.getLogInUtilsatuer().Email;
-            label27.Text = BussinessAcesssLayer.UtilisatuerBussiness.getLogInUtilsatuer().Name;
+            //          label26.Text = BussinessAcesssLayer.UtilisatuerBussiness.getLogInUtilsatuer().Email;
+            //        label27.Text = BussinessAcesssLayer.UtilisatuerBussiness.getLogInUtilsatuer().Name;
 
             boxes();
             Tva();
@@ -953,6 +949,31 @@ namespace freelanceProject1.Presentation_Layer
         private void guna2DataGridView11_CellContentClick_2(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void guna2GroupBox28_Click(object sender, EventArgs e)
+        {
+            LoadFormIntoPanel(new forms.Avoir());
+        }
+
+        private void guna2GroupBox29_Click(object sender, EventArgs e)
+        {
+            LoadFormIntoPanel(new forms.Reporting());
+        }
+
+        private void guna2GroupBox29_Click_1(object sender, EventArgs e)
+        {
+            LoadFormIntoPanel(new forms.Reporting());
+        }
+
+        private void guna2GroupBox28_Click_1(object sender, EventArgs e)
+        {
+            LoadFormIntoPanel(new forms.Avoir());
+        }
+
+        private void guna2GroupBox30_Click(object sender, EventArgs e)
+        {
+            LoadFormIntoPanel(new forms.SuiviCaisse());
         }
     }
 }  

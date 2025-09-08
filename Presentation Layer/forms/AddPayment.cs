@@ -1,5 +1,6 @@
-﻿using BusinessAccessLayer;
+﻿using BussinessAcesssLayer;
 using BussinessAcesssLayer;
+//using BussinessAcesssLayer;
 using DataAccessLayer.Models;
 using freelanceProject1.Presentation_Layer.usefulFunction;
 using Guna.UI2.WinForms;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using static Dtos.Dtos;
+using Dtos;
 using System.Diagnostics.Eventing.Reader;
 
 namespace freelanceProject1.Presentation_Layer.forms
@@ -43,7 +44,7 @@ namespace freelanceProject1.Presentation_Layer.forms
         private List<PaymentDocument> existingDocuments2;
         private List<PaymentDocument> existingDocuments3;
         private string fournisserid = "";
-        private EntityDto a = new EntityDto();
+        private Dtos.Dtos.EntityDto  a = new Dtos.Dtos.EntityDto();
         private List<PaymentDocument> removedOldDocuments = new List<PaymentDocument>();
 
         private bool isEditMode = false;
@@ -114,15 +115,15 @@ namespace freelanceProject1.Presentation_Layer.forms
             guna2TabControl1.TabPages.RemoveAt(1);
             guna2TabControl1.TabPages.RemoveAt(1);
             guna2Button5.Enabled = false;
-            guna2Button9.Enabled = false;
+           
             existingPayment = pay;
             existingDocuments = docs;
             isEditMode = true;
             LoadDataToForm();
         }
-        private List<FactureSelectionnee> selectedFactures;
+        private List<Dtos.Dtos.FactureSelectionnee> selectedFactures;
 
-        public AddPayment(Dtos.Dtos.PaymentFournisseurDto pay, List<PaymentDocument> docs, List<FactureSelectionnee> factures)
+        public AddPayment(Dtos.Dtos.PaymentFournisseurDto pay, List<PaymentDocument> docs, List<Dtos.Dtos.FactureSelectionnee> factures)
         {
             InitializeComponent();
 
@@ -130,7 +131,7 @@ namespace freelanceProject1.Presentation_Layer.forms
             guna2TabControl1.TabPages.RemoveAt(1);
 
             guna2Button5.Enabled = false;
-            guna2Button9.Enabled = false;
+           
 
             existingPayment = pay;
             existingDocuments = docs;
@@ -142,17 +143,7 @@ namespace freelanceProject1.Presentation_Layer.forms
         }
 
 
-        public AddPayment(Dtos.Dtos.PaymentUtilisatuerDto pay, List<PaymentDocument> docs)
-        {
-            InitializeComponent();
-            guna2TabControl1.TabPages.RemoveAt(0);
-            guna2TabControl1.TabPages.RemoveAt(1);
-
-            existingPayment2 = pay;
-            existingDocuments = docs;
-            isEditMode = true;
-            LoadUtilsatueruDataToForm();
-        }
+      
 
 
         public AddPayment(Dtos.Dtos.PaymentDto pay, List<PaymentDocument> docs)
@@ -191,56 +182,7 @@ namespace freelanceProject1.Presentation_Layer.forms
         //}
 
 
-        private void LoadUtilsatueruDataToForm()
-        {
-            guna2Button9_Click(guna2Button9, EventArgs.Empty);
-
-            // Chargement des utilisateurs
-            usefulFunction.UsefulFuncitonClass.loadcomboboxofUtilisateursWithDataNoAsync(guna2ComboBox5);
-            guna2ComboBox5.SelectedValue = existingPayment2.UtilisatuerId;
-
-            usefulFunction.UsefulFuncitonClass.loadcomboboxofEntityWithDataNotAsync(guna2ComboBox2);
-            guna2ComboBox2.SelectedValue = existingPayment2.entityId;
-            guna2ComboBox13.SelectedItem = existingPayment2.MethodeDePayment;
-            guna2ComboBox2_SelectedIndexChanged(guna2ComboBox2, EventArgs.Empty);
-
-
-            // Chargement de la méthode de paiement
-            guna2ComboBox1.SelectedItem = existingPayment2.compte;
-
-            // Chargement des entités
-
-
-            // Montants
-            guna2NumericUpDown1.Value = existingPayment2.Amount;
-            guna2NumericUpDown2.Value = existingPayment2.debit;
-            guna2NumericUpDown3.Value = existingPayment2.months;
-
-            // Champs texte
-            guna2TextBox1.Text = existingPayment2.Note;
-            guna2TextBox6.Text = existingPayment2.ville;
-            guna2TextBox7.Text = existingPayment2.reference;
-
-            // Date du paiement
-            if (existingPayment2.PaymentDate != null)
-                guna2DateTimePicker1.Value = existingPayment2.PaymentDate;
-            else
-                guna2DateTimePicker1.Value = DateTime.Today;
-
-            // Statut
-            guna2ComboBox6.SelectedItem = existingPayment2.Status;
-
-            foreach (var doc in existingDocuments)
-            {
-                if (!string.IsNullOrEmpty(doc.FilePath))
-                {
-                    oldDocuments.Add(doc);
-                    selectedFiles.Add(doc.FileSourcePath); // OR doc.FilePath
-                    AddFileCard(flowLayoutPanel2, doc.FileName, isOld: true);
-                }
-            }
-        }
-
+    
 
 
 
@@ -395,7 +337,7 @@ namespace freelanceProject1.Presentation_Layer.forms
             try
             {
                 guna2DataGridView3.Rows.Clear();
-                var user = await FactureFournisseurBusinessLayer.GetByIdAsync(UsefulFuncitonClass.ExtractIdFromFactureName(existingPayment.fournisseurFacture));
+                var user = await BussinessAcesssLayer.FactureFournisseurBusinessLayer.GetByIdAsync(UsefulFuncitonClass.ExtractIdFromFactureName(existingPayment.fournisseurFacture));
                 label15.Visible = false;
                 label25.Visible = false;
                 guna2DataGridView3.Rows.Add(
@@ -505,7 +447,7 @@ namespace freelanceProject1.Presentation_Layer.forms
             tabDocuments[tabPage1] = selectedFiles;
             tabOldDocuments[tabPage1] = oldDocuments;
             var temp = new Dtos.Dtos.PaymentFournisseurDto();
-            if (guna2ComboBox7.SelectedItem is EntityDto selectedEntity2)
+            if (guna2ComboBox7.SelectedItem is Dtos.Dtos.EntityDto selectedEntity2)
             {
                 temp.entityId = selectedEntity2.Id;
             }
@@ -516,7 +458,7 @@ namespace freelanceProject1.Presentation_Layer.forms
                 return;
             }
 
-            if (guna2ComboBox11.SelectedItem is CompteComboBoxDto selectedEntity3)
+            if (guna2ComboBox11.SelectedItem is Dtos.Dtos.CompteComboBoxDto selectedEntity3)
             {
                 temp.comptebancaireId = selectedEntity3.Id;
             }
@@ -549,7 +491,7 @@ namespace freelanceProject1.Presentation_Layer.forms
                 return;
             }
 
-            List<FactureSelectionnee> facturesChoisies = new List<FactureSelectionnee>();
+            List<Dtos.Dtos.FactureSelectionnee> facturesChoisies = new List<Dtos.Dtos.FactureSelectionnee>();
 
             foreach (DataGridViewRow row in guna2DataGridView3.Rows)
             {
@@ -570,7 +512,7 @@ namespace freelanceProject1.Presentation_Layer.forms
 
                     decimal montantRestant = total - payed;
 
-                    facturesChoisies.Add(new FactureSelectionnee
+                    facturesChoisies.Add(new Dtos.Dtos.FactureSelectionnee
                     {
                         NumeroFacture = numeroFacture,
                         MontantAPayer = montantRestant,
@@ -712,7 +654,7 @@ namespace freelanceProject1.Presentation_Layer.forms
         private async void AddPayment_Load(object sender, EventArgs e)
         {
             UsefulFuncitonClass.PreparerFlowLayoutPanel(flowLayoutPanel1);
-            UsefulFuncitonClass.PreparerFlowLayoutPanel(flowLayoutPanel2);
+          
             UsefulFuncitonClass.PreparerFlowLayoutPanel(flowLayoutPanel3);
 
             this.FormBorderStyle = FormBorderStyle.None;
@@ -727,14 +669,11 @@ namespace freelanceProject1.Presentation_Layer.forms
             this.StartPosition = FormStartPosition.Manual;
 
             tabDocuments[tabPage1] = new List<string>();
-            tabDocuments[tabPage2] = new List<string>();
+            
             tabDocuments[tabPage3] = new List<string>();
-            if (!isEditMode)
-            {
-                UsefulFuncitonClass.loadcomboboxofEntityWithDataNotAsync(guna2ComboBox2);
-            }
+           
             tabOldDocuments[tabPage1] = new List<PaymentDocument>();
-            tabOldDocuments[tabPage2] = new List<PaymentDocument>();
+          
             tabOldDocuments[tabPage3] = new List<PaymentDocument>();
             if (!isEditMode)
             {
@@ -797,7 +736,7 @@ namespace freelanceProject1.Presentation_Layer.forms
 
             if (!isEditMode)
             {
-                UsefulFuncitonClass.loadcomboboxofUtilisateursWithDataNoAsync(guna2ComboBox5);
+               
                 UsefulFuncitonClass.loadcomboboxofEntityWithDataNotAsync(guna2ComboBox10);
             }
            
@@ -903,7 +842,7 @@ namespace freelanceProject1.Presentation_Layer.forms
         private void garantirdevisandfournisserandfactures()
         {
 
-            if (!(guna2ComboBox4.SelectedItem is FournisseurDto abc))
+            if (!(guna2ComboBox4.SelectedItem is Dtos.Dtos.FournisseurDto abc))
             {
                 MessageBox.Show("Veuillez sélectionner Un Fournissuer.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -913,7 +852,7 @@ namespace freelanceProject1.Presentation_Layer.forms
                 MessageBox.Show("Veuillez sélectionner Le Devis Or Compte Bancaire .", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            else if (!(guna2ComboBox7.SelectedItem is EntityDto ab))
+            else if (!(guna2ComboBox7.SelectedItem is Dtos.Dtos.EntityDto ab))
             {
                 MessageBox.Show("Veuillez sélectionner Le Entity .", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -931,204 +870,7 @@ namespace freelanceProject1.Presentation_Layer.forms
 
         }
 
-        private async void guna2Button2_Click(object sender, EventArgs e)
-        {
-            tabDocuments[tabPage2] = selectedFiles;
-            tabOldDocuments[tabPage2] = oldDocuments;
-            var temp = new Dtos.Dtos.PaymentUtilisatuerDto();
-
-
-            if (guna2ComboBox5.SelectedItem is UtilisatuerDto selectedEntity2)
-            {
-                temp.UtilisatuerId = selectedEntity2.Id;
-                temp.utilisateurname = selectedEntity2.Name;
-            }
-            else
-            {
-                MessageBox.Show("Veuillez sélectionner Un Utilisateur.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (guna2ComboBox1.SelectedItem != null)
-            {
-                temp.compte = guna2ComboBox1.SelectedItem.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Veuillez sélectionner L'compte.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (guna2ComboBox2.SelectedItem is EntityDto selectedEntity3)
-            {
-                temp.entityId = selectedEntity3.Id;
-                temp.entityName = selectedEntity3.Name;
-
-            }
-
-
-
-
-            //if (guna2ComboBox2.SelectedValue != null)
-            //{
-            //    temp.entityId = Convert.ToInt32(guna2ComboBox2.SelectedValue);
-            //}
-            else
-            {
-                MessageBox.Show("Veuillez sélectionner Un Entity.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-          
-
-
-
-           
-
-            temp.MethodeDePayment = guna2ComboBox13.SelectedItem.ToString();
-
-            if (guna2ComboBox6.SelectedItem != null)
-            {
-                temp.Status = guna2ComboBox6.SelectedItem.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Veuillez sélectionner Le Status.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (usefulFunction.UsefulFuncitonClass.checkValidation(guna2NumericUpDown1, "Montant Donne"))
-            {
-                temp.Amount = Convert.ToDecimal(guna2NumericUpDown1.Value);
-            }
-            else
-            {
-                MessageBox.Show("Veuillez entre le Montant.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (usefulFunction.UsefulFuncitonClass.checkValidation(guna2NumericUpDown2, "Montant debit"))
-            {
-                temp.debit = Convert.ToDecimal(guna2NumericUpDown2.Value);
-            }
-            else temp.debit = 0;
-            if (usefulFunction.UsefulFuncitonClass.checkValidation(guna2NumericUpDown3, "Mois"))
-            {
-                temp.months = Convert.ToInt32(guna2NumericUpDown3.Value);
-            }
-            else
-            {
-                MessageBox.Show("Veuillez entre le mois.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            temp.Note = string.IsNullOrEmpty(guna2TextBox1.Text) ? " " : guna2TextBox1.Text;
-
-            if (!string.IsNullOrEmpty(guna2TextBox6.Text))
-            {
-                temp.ville = guna2TextBox6.Text.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Veuillez enter le ville.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            if (!string.IsNullOrEmpty(guna2TextBox7.Text))
-            {
-                temp.reference = guna2TextBox7.Text.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Veuillez enter le reference.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (guna2DateTimePicker1.Value != null)
-            {
-                temp.PaymentDate = guna2DateTimePicker1.Value;
-            }
-            else
-            {
-                temp.PaymentDate = DateTime.Today;
-            }
-            temp.PaidBy = UtilisatuerBussiness.getLogInUtilsatuer().Id;
-            temp.RegisteredName = UtilisatuerBussiness.getLogInUtilsatuer().Name;
-
-            string uploadFolderPath = Path.Combine(
-    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-    "KayGroupApp", "UploadedFiles");
-
-            if (!Directory.Exists(uploadFolderPath))
-                Directory.CreateDirectory(uploadFolderPath);
-            List<PaymentDocument> documentsToSave = new List<PaymentDocument>();
-
-
-            documentsToSave.AddRange(oldDocuments);
-
-            foreach (var filePath in selectedFiles)
-            {
-                if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
-                    continue;
-
-                if (!oldDocuments.Any(d => d.FilePath == filePath))
-                {
-                    string destPath = Path.Combine(uploadFolderPath, Path.GetFileName(filePath));
-
-                    try
-                    {
-                        File.Copy(filePath, destPath, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Erreur lors de la copie du fichier : {ex.Message}");
-                    }
-
-                    documentsToSave.Add(new PaymentDocument
-                    {
-                        FileName = Path.GetFileName(filePath),
-                        FileSourcePath = filePath,
-                        FilePath = destPath
-                    });
-                }
-            }
-
-
-            Dtos.Dtos.OperationResult result;
-            if (!documentsToSave.Any())
-            {
-                MessageBox.Show("Veuillez sélectionner au moins un document de paiement.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-
-
-            if (isEditMode)
-            {
-                temp.PaymentId = existingPayment2.PaymentId;
-                result = await UtilisateurPaymentBussinessLayer.UpdateAdvanceAsync(temp.PaymentId, temp, documentsToSave);
-            }
-            else
-            {
-                result = await UtilisateurPaymentBussinessLayer.AddAdvanceAsync(temp, documentsToSave);
-            }
-
-            if (result.IsSuccess)
-            {
-                MessageBox.Show(isEditMode ? "Paiement modifié avec succès." : "Paiement ajouté avec succès.",
-                                "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                selectedFiles.Clear();
-                flowLayoutPanel2.Controls.Clear();
-                Task.Delay(1000);
-                if (this.Owner is Fournisseur parentForm)
-                {
-                    parentForm.HideOverlay(); // ✅ Appelle directement la méthode du parent
-                }
-                // Fermer la fenêtre
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show(result.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+        
 
         private void guna2TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1145,27 +887,7 @@ namespace freelanceProject1.Presentation_Layer.forms
           
         }
 
-        private void guna2ImageButton2_Click_1(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog
-            {
-                Multiselect = true,
-                Filter = "All Files|*.*"
-            };
-
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                foreach (string file in ofd.FileNames)
-                {
-                    if (!string.IsNullOrWhiteSpace(file) && File.Exists(file) && !selectedFiles.Contains(file))
-                    {
-
-                        selectedFiles.Add(file);
-                        AddFileCard(flowLayoutPanel2, file);
-                    }
-                }
-            }
-        }
+        
 
         private async void guna2Button11_Click(object sender, EventArgs e)
         {
@@ -1184,7 +906,7 @@ namespace freelanceProject1.Presentation_Layer.forms
                 MessageBox.Show("Veuillez sélectionner Mode De Payment.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            if (guna2ComboBox10.SelectedItem is EntityDto selectedEntity2 && guna2ComboBox10.SelectedValue != null)
+            if (guna2ComboBox10.SelectedItem is Dtos.Dtos.EntityDto selectedEntity2 && guna2ComboBox10.SelectedValue != null)
             {
                 temp.entityId = selectedEntity2.Id;
                 temp.entityName = selectedEntity2.code;
@@ -1207,7 +929,7 @@ namespace freelanceProject1.Presentation_Layer.forms
             }
 
 
-            if (guna2ComboBox14.SelectedItem is CompteComboBoxDto selectedEntity6)
+            if (guna2ComboBox14.SelectedItem is Dtos.Dtos.CompteComboBoxDto selectedEntity6)
             {
                 temp.comptebancaireId = selectedEntity6.Id;
                 var g = await BussinessAcesssLayer.CompteBancaireBusinessLayer.GetCompteById(selectedEntity6.Id);
@@ -1351,13 +1073,13 @@ namespace freelanceProject1.Presentation_Layer.forms
         private void reset()
         {
             guna2Button4.HoverState.FillColor = guna2Button4.FillColor;
-            guna2Button9.HoverState.FillColor = guna2Button9.FillColor;
+           
             guna2Button5.HoverState.FillColor = guna2Button5.FillColor;
         }
         private void guna2Button4_Click(object sender, EventArgs e)
         {
             guna2Button5.FillColor = Color.Transparent;
-            guna2Button9.FillColor = Color.Transparent;
+           
             guna2Button4.FillColor = Color.White;
             guna2TabControl1.SelectedIndex = 0;
             reset();
@@ -1367,7 +1089,7 @@ namespace freelanceProject1.Presentation_Layer.forms
         {
             guna2Button5.FillColor = Color.Transparent;
             guna2Button4.FillColor = Color.Transparent;
-            guna2Button9.FillColor = Color.White;
+           
             guna2TabControl1.SelectedIndex = 1;
             reset();
 
@@ -1375,7 +1097,7 @@ namespace freelanceProject1.Presentation_Layer.forms
 
         private void guna2Button5_Click(object sender, EventArgs e)
         {
-            guna2Button9.FillColor = Color.Transparent;
+           
             guna2Button4.FillColor = Color.Transparent;
             guna2Button5.FillColor = Color.White;
             guna2TabControl1.SelectedIndex = 2;
@@ -1428,7 +1150,7 @@ namespace freelanceProject1.Presentation_Layer.forms
 
         private void guna2ComboBox7_SelectedIndexChanged(object sender, EventArgs e)
         {
-            a = guna2ComboBox7.SelectedItem as EntityDto;
+            a = guna2ComboBox7.SelectedItem as Dtos.Dtos.EntityDto;
             if (a != null)
             {
                 usefulFunction.UsefulFuncitonClass.LoadComboBoxOfComptesBancaires(guna2ComboBox11, (a.Id));
@@ -1465,7 +1187,7 @@ namespace freelanceProject1.Presentation_Layer.forms
 
         private void guna2ComboBox11_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (guna2ComboBox11.SelectedItem is CompteComboBoxDto selectedCompte)
+            if (guna2ComboBox11.SelectedItem is Dtos.Dtos.CompteComboBoxDto selectedCompte)
             {
                 if (guna2ComboBox3.Items.Contains(selectedCompte.Devise))
                 {
@@ -1484,7 +1206,7 @@ namespace freelanceProject1.Presentation_Layer.forms
 
         private void guna2ComboBox10_SelectedIndexChanged(object sender, EventArgs e)
         {
-            a = guna2ComboBox10.SelectedItem as EntityDto;
+            a = guna2ComboBox10.SelectedItem as Dtos.Dtos.EntityDto;
             if (a != null)
             {
                 usefulFunction.UsefulFuncitonClass.LoadComboBoxOfComptesBancaires(guna2ComboBox14, (a.Id));

@@ -20,18 +20,18 @@ namespace freelanceProject1
             ApplicationConfiguration.Initialize();
             using var appDbContext = new AppDbContext();
 
+            appDbContext.Database.EnsureCreated();
+
 
             SettingsService.Initialize(appDbContext);
 
-            //appDbContext.Database.EnsureCreated();
-            //Task.Delay(2000);
 
-            //    var settings = appDbContext.UserSettings.FirstOrDefault();
-            //    if (settings == null || settings.Id == 0)
-            //    {
-            //        settings = new UserSettings();
-            //        UserSettingsManager.Save(appDbContext, settings);
-            //    }
+            var settings = appDbContext.UserSettings.FirstOrDefault();
+            if (settings == null || settings.Id == 0)
+            {
+                settings = new UserSettings();
+                UserSettingsManager.Save(appDbContext, settings);
+            }
 
             var settings3 = appDbContext.Entities.FirstOrDefault();
             if (settings3 == null || settings3.id == 0)

@@ -286,7 +286,7 @@
             guna2DateTimePicker2.FillColor = SystemColors.ControlLightLight;
             guna2DateTimePicker2.Font = new Font("Segoe UI", 9F);
             guna2DateTimePicker2.Format = DateTimePickerFormat.Long;
-            guna2DateTimePicker2.Location = new Point(491, 49);
+            guna2DateTimePicker2.Location = new Point(521, 49);
             guna2DateTimePicker2.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             guna2DateTimePicker2.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             guna2DateTimePicker2.Name = "guna2DateTimePicker2";
@@ -301,11 +301,11 @@
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.ForeColor = Color.Gray;
-            label4.Location = new Point(455, 58);
+            label4.Location = new Point(491, 58);
             label4.Name = "label4";
-            label4.Size = new Size(32, 20);
+            label4.Size = new Size(28, 20);
             label4.TabIndex = 60;
-            label4.Text = "To :";
+            label4.Text = "à : ";
             // 
             // guna2DateTimePicker1
             // 
@@ -318,7 +318,7 @@
             guna2DateTimePicker1.FillColor = SystemColors.ControlLightLight;
             guna2DateTimePicker1.Font = new Font("Segoe UI", 9F);
             guna2DateTimePicker1.Format = DateTimePickerFormat.Long;
-            guna2DateTimePicker1.Location = new Point(265, 51);
+            guna2DateTimePicker1.Location = new Point(302, 51);
             guna2DateTimePicker1.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             guna2DateTimePicker1.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             guna2DateTimePicker1.Name = "guna2DateTimePicker1";
@@ -807,9 +807,9 @@
             label45.ForeColor = Color.Gray;
             label45.Location = new Point(21, 59);
             label45.Name = "label45";
-            label45.Size = new Size(243, 20);
+            label45.Size = new Size(278, 20);
             label45.TabIndex = 34;
-            label45.Text = "Suivi des obligations fiscales From :";
+            label45.Text = "Suivi des obligations fiscales à partir de :";
             label45.Click += label45_Click;
             // 
             // Fiscal

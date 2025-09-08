@@ -194,7 +194,7 @@
             guna2Panel2.Cursor = Cursors.Hand;
             guna2Panel2.CustomizableEdges = customizableEdges5;
             guna2Panel2.FillColor = SystemColors.ControlLight;
-            guna2Panel2.Location = new Point(12, 88);
+            guna2Panel2.Location = new Point(12, 82);
             guna2Panel2.Name = "guna2Panel2";
             guna2Panel2.ShadowDecoration.CustomizableEdges = customizableEdges6;
             guna2Panel2.Size = new Size(572, 42);
@@ -270,7 +270,7 @@
             guna2TabControl1.Controls.Add(tabPage2);
             guna2TabControl1.HotTrack = true;
             guna2TabControl1.ItemSize = new Size(90, 43);
-            guna2TabControl1.Location = new Point(17, 88);
+            guna2TabControl1.Location = new Point(17, 130);
             guna2TabControl1.Name = "guna2TabControl1";
             guna2TabControl1.Padding = new Point(50, 40);
             guna2TabControl1.SelectedIndex = 0;
@@ -294,15 +294,16 @@
             guna2TabControl1.TabIndex = 61;
             guna2TabControl1.TabMenuBackColor = Color.White;
             guna2TabControl1.TabMenuOrientation = Guna.UI2.WinForms.TabMenuOrientation.HorizontalTop;
+            guna2TabControl1.TabMenuVisible = false;
             guna2TabControl1.TabStop = false;
             // 
             // tabPage1
             // 
             tabPage1.BackColor = Color.White;
             tabPage1.Controls.Add(guna2GradientPanel1);
-            tabPage1.Location = new Point(4, 47);
+            tabPage1.Location = new Point(4, 5);
             tabPage1.Name = "tabPage1";
-            tabPage1.Size = new Size(559, 608);
+            tabPage1.Size = new Size(559, 650);
             tabPage1.TabIndex = 2;
             tabPage1.Text = "Clients";
             // 
@@ -342,10 +343,10 @@
             guna2GradientPanel1.CustomizableEdges = customizableEdges37;
             guna2GradientPanel1.FillColor = Color.White;
             guna2GradientPanel1.FillColor2 = Color.White;
-            guna2GradientPanel1.Location = new Point(-3, -15);
+            guna2GradientPanel1.Location = new Point(-3, 11);
             guna2GradientPanel1.Name = "guna2GradientPanel1";
             guna2GradientPanel1.ShadowDecoration.CustomizableEdges = customizableEdges38;
-            guna2GradientPanel1.Size = new Size(565, 621);
+            guna2GradientPanel1.Size = new Size(565, 678);
             guna2GradientPanel1.TabIndex = 2;
             guna2GradientPanel1.Paint += guna2GradientPanel1_Paint;
             // 
@@ -418,9 +419,9 @@
             label23.ForeColor = Color.Black;
             label23.Location = new Point(4, 327);
             label23.Name = "label23";
-            label23.Size = new Size(43, 17);
+            label23.Size = new Size(36, 17);
             label23.TabIndex = 102;
-            label23.Text = "Payed";
+            label23.Text = "payé";
             // 
             // guna2ComboBox7
             // 
@@ -868,9 +869,9 @@
             // 
             tabPage2.BackColor = Color.White;
             tabPage2.Controls.Add(guna2GradientPanel2);
-            tabPage2.Location = new Point(4, 47);
+            tabPage2.Location = new Point(4, 5);
             tabPage2.Name = "tabPage2";
-            tabPage2.Size = new Size(559, 608);
+            tabPage2.Size = new Size(559, 650);
             tabPage2.TabIndex = 3;
             tabPage2.Text = "Fournisseurs";
             // 
@@ -1479,6 +1480,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            AutoScroll = true;
             BackColor = Color.White;
             ClientSize = new Size(604, 749);
             Controls.Add(label24);

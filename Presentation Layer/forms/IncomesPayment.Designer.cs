@@ -57,10 +57,6 @@
             DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncomesPayment));
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges19 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges20 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
             Guna.UI2.WinForms.Suite.CustomizableEdges customizableEdges21 = new Guna.UI2.WinForms.Suite.CustomizableEdges();
@@ -76,6 +72,10 @@
             DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle13 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(IncomesPayment));
             sIdeBar1 = new SIdeBar();
             guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             guna2Panel2 = new Guna.UI2.WinForms.Guna2Panel();
@@ -96,6 +96,17 @@
             tabPage2 = new TabPage();
             guna2Panel7 = new Guna.UI2.WinForms.Guna2Panel();
             guna2DataGridView1 = new Guna.UI2.WinForms.Guna2DataGridView();
+            guna2PictureBox2 = new Guna.UI2.WinForms.Guna2PictureBox();
+            guna2TextBox2 = new Guna.UI2.WinForms.Guna2TextBox();
+            label6 = new Label();
+            tabPage1 = new TabPage();
+            guna2GradientPanel2 = new Guna.UI2.WinForms.Guna2GradientPanel();
+            guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
+            guna2TextBox1 = new Guna.UI2.WinForms.Guna2TextBox();
+            label1 = new Label();
+            guna2DataGridView3 = new Guna.UI2.WinForms.Guna2DataGridView();
+            label13 = new Label();
+            label12 = new Label();
             dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn13 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn12 = new DataGridViewTextBoxColumn();
@@ -111,15 +122,6 @@
             dataGridViewButtonColumn1 = new DataGridViewImageColumn();
             dataGridViewButtonColumn2 = new DataGridViewImageColumn();
             Column2 = new DataGridViewImageColumn();
-            guna2PictureBox2 = new Guna.UI2.WinForms.Guna2PictureBox();
-            guna2TextBox2 = new Guna.UI2.WinForms.Guna2TextBox();
-            label6 = new Label();
-            tabPage1 = new TabPage();
-            guna2GradientPanel2 = new Guna.UI2.WinForms.Guna2GradientPanel();
-            guna2PictureBox1 = new Guna.UI2.WinForms.Guna2PictureBox();
-            guna2TextBox1 = new Guna.UI2.WinForms.Guna2TextBox();
-            label1 = new Label();
-            guna2DataGridView3 = new Guna.UI2.WinForms.Guna2DataGridView();
             dataGridViewTextBoxColumn19 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn24 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn20 = new DataGridViewTextBoxColumn();
@@ -133,8 +135,6 @@
             dataGridViewImageColumn2 = new DataGridViewImageColumn();
             dataGridViewImageColumn3 = new DataGridViewImageColumn();
             dataGridViewImageColumn4 = new DataGridViewImageColumn();
-            label13 = new Label();
-            label12 = new Label();
             guna2Panel1.SuspendLayout();
             guna2Panel2.SuspendLayout();
             guna2Panel6.SuspendLayout();
@@ -426,6 +426,7 @@
             // 
             guna2TabControl1.Controls.Add(tabPage2);
             guna2TabControl1.Controls.Add(tabPage1);
+            guna2TabControl1.Enabled = false;
             guna2TabControl1.HotTrack = true;
             guna2TabControl1.ItemSize = new Size(90, 43);
             guna2TabControl1.Location = new Point(10, 175);
@@ -461,11 +462,11 @@
             tabPage2.BackColor = Color.White;
             tabPage2.Controls.Add(guna2Panel7);
             tabPage2.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            tabPage2.Location = new Point(4, 5);
+            tabPage2.Location = new Point(4, 47);
             tabPage2.Margin = new Padding(100);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(100);
-            tabPage2.Size = new Size(1032, 547);
+            tabPage2.Size = new Size(1032, 505);
             tabPage2.TabIndex = 2;
             tabPage2.Text = "To Fournisseur";
             // 
@@ -568,150 +569,6 @@
             guna2DataGridView1.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(71, 69, 94);
             guna2DataGridView1.CellContentClick += guna2DataGridView1_CellContentClick_1;
             guna2DataGridView1.CellPainting += guna2DataGridView1_CellPainting;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            dataGridViewTextBoxColumn1.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewTextBoxColumn1.HeaderText = "N° Payment";
-            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            dataGridViewTextBoxColumn1.ReadOnly = true;
-            dataGridViewTextBoxColumn1.SortMode = DataGridViewColumnSortMode.NotSortable;
-            dataGridViewTextBoxColumn1.Width = 96;
-            // 
-            // dataGridViewTextBoxColumn13
-            // 
-            dataGridViewTextBoxColumn13.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewTextBoxColumn13.HeaderText = "N° Facture";
-            dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
-            dataGridViewTextBoxColumn13.ReadOnly = true;
-            dataGridViewTextBoxColumn13.SortMode = DataGridViewColumnSortMode.NotSortable;
-            dataGridViewTextBoxColumn13.Width = 87;
-            // 
-            // dataGridViewTextBoxColumn12
-            // 
-            dataGridViewTextBoxColumn12.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewTextBoxColumn12.HeaderText = "Entité";
-            dataGridViewTextBoxColumn12.MinimumWidth = 80;
-            dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            dataGridViewTextBoxColumn12.ReadOnly = true;
-            dataGridViewTextBoxColumn12.SortMode = DataGridViewColumnSortMode.NotSortable;
-            dataGridViewTextBoxColumn12.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn11
-            // 
-            dataGridViewTextBoxColumn11.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
-            dataGridViewTextBoxColumn11.DefaultCellStyle = dataGridViewCellStyle3;
-            dataGridViewTextBoxColumn11.HeaderText = "Client";
-            dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            dataGridViewTextBoxColumn11.ReadOnly = true;
-            dataGridViewTextBoxColumn11.SortMode = DataGridViewColumnSortMode.NotSortable;
-            dataGridViewTextBoxColumn11.Width = 57;
-            // 
-            // Column5
-            // 
-            Column5.HeaderText = "CompteBancaire";
-            Column5.Name = "Column5";
-            Column5.ReadOnly = true;
-            Column5.Width = 148;
-            // 
-            // dataGridViewTextBoxColumn14
-            // 
-            dataGridViewTextBoxColumn14.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewTextBoxColumn14.HeaderText = "Date De Payment";
-            dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
-            dataGridViewTextBoxColumn14.ReadOnly = true;
-            dataGridViewTextBoxColumn14.SortMode = DataGridViewColumnSortMode.NotSortable;
-            dataGridViewTextBoxColumn14.Width = 134;
-            // 
-            // dataGridViewTextBoxColumn15
-            // 
-            dataGridViewTextBoxColumn15.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewTextBoxColumn15.HeaderText = "Montant";
-            dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
-            dataGridViewTextBoxColumn15.ReadOnly = true;
-            dataGridViewTextBoxColumn15.Width = 94;
-            // 
-            // dataGridViewTextBoxColumn17
-            // 
-            dataGridViewTextBoxColumn17.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewTextBoxColumn17.HeaderText = "Registered By";
-            dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
-            dataGridViewTextBoxColumn17.ReadOnly = true;
-            dataGridViewTextBoxColumn17.SortMode = DataGridViewColumnSortMode.NotSortable;
-            dataGridViewTextBoxColumn17.Width = 110;
-            // 
-            // dataGridViewTextBoxColumn16
-            // 
-            dataGridViewTextBoxColumn16.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
-            dataGridViewTextBoxColumn16.DefaultCellStyle = dataGridViewCellStyle4;
-            dataGridViewTextBoxColumn16.HeaderText = "Mode De Payment";
-            dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
-            dataGridViewTextBoxColumn16.ReadOnly = true;
-            dataGridViewTextBoxColumn16.Resizable = DataGridViewTriState.True;
-            dataGridViewTextBoxColumn16.SortMode = DataGridViewColumnSortMode.NotSortable;
-            dataGridViewTextBoxColumn16.Width = 141;
-            // 
-            // Column4
-            // 
-            Column4.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            Column4.HeaderText = "Description";
-            Column4.Name = "Column4";
-            Column4.ReadOnly = true;
-            Column4.Width = 114;
-            // 
-            // Column1
-            // 
-            Column1.HeaderText = "Reference";
-            Column1.Name = "Column1";
-            Column1.ReadOnly = true;
-            Column1.Width = 104;
-            // 
-            // dataGridViewTextBoxColumn18
-            // 
-            dataGridViewTextBoxColumn18.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle5.NullValue = resources.GetObject("dataGridViewCellStyle5.NullValue");
-            dataGridViewTextBoxColumn18.DefaultCellStyle = dataGridViewCellStyle5;
-            dataGridViewTextBoxColumn18.HeaderText = "";
-            dataGridViewTextBoxColumn18.Image = (Image)resources.GetObject("dataGridViewTextBoxColumn18.Image");
-            dataGridViewTextBoxColumn18.Name = "dataGridViewTextBoxColumn18";
-            dataGridViewTextBoxColumn18.ReadOnly = true;
-            dataGridViewTextBoxColumn18.Resizable = DataGridViewTriState.True;
-            dataGridViewTextBoxColumn18.SortMode = DataGridViewColumnSortMode.Automatic;
-            dataGridViewTextBoxColumn18.Width = 40;
-            // 
-            // dataGridViewButtonColumn1
-            // 
-            dataGridViewButtonColumn1.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewButtonColumn1.FillWeight = 70F;
-            dataGridViewButtonColumn1.HeaderText = "Action";
-            dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
-            dataGridViewButtonColumn1.ReadOnly = true;
-            dataGridViewButtonColumn1.Resizable = DataGridViewTriState.True;
-            dataGridViewButtonColumn1.Width = 60;
-            // 
-            // dataGridViewButtonColumn2
-            // 
-            dataGridViewButtonColumn2.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            dataGridViewButtonColumn2.FillWeight = 70F;
-            dataGridViewButtonColumn2.HeaderText = "";
-            dataGridViewButtonColumn2.Name = "dataGridViewButtonColumn2";
-            dataGridViewButtonColumn2.ReadOnly = true;
-            dataGridViewButtonColumn2.Resizable = DataGridViewTriState.True;
-            dataGridViewButtonColumn2.Width = 40;
-            // 
-            // Column2
-            // 
-            Column2.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            Column2.HeaderText = "";
-            Column2.Name = "Column2";
-            Column2.ReadOnly = true;
-            Column2.Resizable = DataGridViewTriState.True;
-            Column2.SortMode = DataGridViewColumnSortMode.Automatic;
-            Column2.Width = 40;
             // 
             // guna2PictureBox2
             // 
@@ -927,6 +784,173 @@
             guna2DataGridView3.CellContentClick += guna2DataGridView3_CellContentClick_1;
             guna2DataGridView3.CellPainting += guna2DataGridView3_CellPainting;
             // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label13.ForeColor = Color.FromArgb(64, 64, 64);
+            label13.Location = new Point(14, 61);
+            label13.Name = "label13";
+            label13.Size = new Size(373, 21);
+            label13.TabIndex = 7;
+            label13.Text = "Suivi des paiements reçus – Clients et autres sources";
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.BackColor = Color.Transparent;
+            label12.Font = new Font("Segoe UI", 27.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label12.ForeColor = Color.Black;
+            label12.Location = new Point(3, 15);
+            label12.Name = "label12";
+            label12.Size = new Size(271, 50);
+            label12.TabIndex = 8;
+            label12.Text = "Encaissements";
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            dataGridViewTextBoxColumn1.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridViewTextBoxColumn1.HeaderText = "N° Payment";
+            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            dataGridViewTextBoxColumn1.ReadOnly = true;
+            dataGridViewTextBoxColumn1.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dataGridViewTextBoxColumn1.Width = 96;
+            // 
+            // dataGridViewTextBoxColumn13
+            // 
+            dataGridViewTextBoxColumn13.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridViewTextBoxColumn13.HeaderText = "N° Facture";
+            dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
+            dataGridViewTextBoxColumn13.ReadOnly = true;
+            dataGridViewTextBoxColumn13.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dataGridViewTextBoxColumn13.Width = 87;
+            // 
+            // dataGridViewTextBoxColumn12
+            // 
+            dataGridViewTextBoxColumn12.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridViewTextBoxColumn12.HeaderText = "Entité";
+            dataGridViewTextBoxColumn12.MinimumWidth = 80;
+            dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
+            dataGridViewTextBoxColumn12.ReadOnly = true;
+            dataGridViewTextBoxColumn12.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dataGridViewTextBoxColumn12.Width = 80;
+            // 
+            // dataGridViewTextBoxColumn11
+            // 
+            dataGridViewTextBoxColumn11.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dataGridViewTextBoxColumn11.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewTextBoxColumn11.HeaderText = "Client";
+            dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
+            dataGridViewTextBoxColumn11.ReadOnly = true;
+            dataGridViewTextBoxColumn11.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dataGridViewTextBoxColumn11.Width = 57;
+            // 
+            // Column5
+            // 
+            Column5.HeaderText = "CompteBancaire";
+            Column5.Name = "Column5";
+            Column5.ReadOnly = true;
+            Column5.Width = 148;
+            // 
+            // dataGridViewTextBoxColumn14
+            // 
+            dataGridViewTextBoxColumn14.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridViewTextBoxColumn14.HeaderText = "Date De Payment";
+            dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
+            dataGridViewTextBoxColumn14.ReadOnly = true;
+            dataGridViewTextBoxColumn14.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dataGridViewTextBoxColumn14.Width = 134;
+            // 
+            // dataGridViewTextBoxColumn15
+            // 
+            dataGridViewTextBoxColumn15.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridViewTextBoxColumn15.HeaderText = "Montant";
+            dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
+            dataGridViewTextBoxColumn15.ReadOnly = true;
+            dataGridViewTextBoxColumn15.Width = 94;
+            // 
+            // dataGridViewTextBoxColumn17
+            // 
+            dataGridViewTextBoxColumn17.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridViewTextBoxColumn17.HeaderText = "Enregistré par";
+            dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
+            dataGridViewTextBoxColumn17.ReadOnly = true;
+            dataGridViewTextBoxColumn17.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dataGridViewTextBoxColumn17.Width = 111;
+            // 
+            // dataGridViewTextBoxColumn16
+            // 
+            dataGridViewTextBoxColumn16.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dataGridViewTextBoxColumn16.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewTextBoxColumn16.HeaderText = "Mode De Payment";
+            dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
+            dataGridViewTextBoxColumn16.ReadOnly = true;
+            dataGridViewTextBoxColumn16.Resizable = DataGridViewTriState.True;
+            dataGridViewTextBoxColumn16.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dataGridViewTextBoxColumn16.Width = 141;
+            // 
+            // Column4
+            // 
+            Column4.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            Column4.HeaderText = "Description";
+            Column4.Name = "Column4";
+            Column4.ReadOnly = true;
+            Column4.Width = 114;
+            // 
+            // Column1
+            // 
+            Column1.HeaderText = "Reference";
+            Column1.Name = "Column1";
+            Column1.ReadOnly = true;
+            Column1.Width = 104;
+            // 
+            // dataGridViewTextBoxColumn18
+            // 
+            dataGridViewTextBoxColumn18.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle5.NullValue = resources.GetObject("dataGridViewCellStyle5.NullValue");
+            dataGridViewTextBoxColumn18.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewTextBoxColumn18.HeaderText = "";
+            dataGridViewTextBoxColumn18.Image = (Image)resources.GetObject("dataGridViewTextBoxColumn18.Image");
+            dataGridViewTextBoxColumn18.Name = "dataGridViewTextBoxColumn18";
+            dataGridViewTextBoxColumn18.ReadOnly = true;
+            dataGridViewTextBoxColumn18.Resizable = DataGridViewTriState.True;
+            dataGridViewTextBoxColumn18.SortMode = DataGridViewColumnSortMode.Automatic;
+            dataGridViewTextBoxColumn18.Width = 40;
+            // 
+            // dataGridViewButtonColumn1
+            // 
+            dataGridViewButtonColumn1.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewButtonColumn1.FillWeight = 70F;
+            dataGridViewButtonColumn1.HeaderText = "Action";
+            dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
+            dataGridViewButtonColumn1.ReadOnly = true;
+            dataGridViewButtonColumn1.Resizable = DataGridViewTriState.True;
+            dataGridViewButtonColumn1.Width = 60;
+            // 
+            // dataGridViewButtonColumn2
+            // 
+            dataGridViewButtonColumn2.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewButtonColumn2.FillWeight = 70F;
+            dataGridViewButtonColumn2.HeaderText = "";
+            dataGridViewButtonColumn2.Name = "dataGridViewButtonColumn2";
+            dataGridViewButtonColumn2.ReadOnly = true;
+            dataGridViewButtonColumn2.Resizable = DataGridViewTriState.True;
+            dataGridViewButtonColumn2.Width = 40;
+            // 
+            // Column2
+            // 
+            Column2.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            Column2.HeaderText = "";
+            Column2.Name = "Column2";
+            Column2.ReadOnly = true;
+            Column2.Resizable = DataGridViewTriState.True;
+            Column2.SortMode = DataGridViewColumnSortMode.Automatic;
+            Column2.Width = 40;
+            // 
             // dataGridViewTextBoxColumn19
             // 
             dataGridViewTextBoxColumn19.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
@@ -941,11 +965,11 @@
             // 
             dataGridViewTextBoxColumn24.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewTextBoxColumn24.FillWeight = 55.15464F;
-            dataGridViewTextBoxColumn24.HeaderText = "Paid By";
+            dataGridViewTextBoxColumn24.HeaderText = "Enregistré par";
             dataGridViewTextBoxColumn24.Name = "dataGridViewTextBoxColumn24";
             dataGridViewTextBoxColumn24.ReadOnly = true;
             dataGridViewTextBoxColumn24.SortMode = DataGridViewColumnSortMode.NotSortable;
-            dataGridViewTextBoxColumn24.Width = 67;
+            dataGridViewTextBoxColumn24.Width = 111;
             // 
             // dataGridViewTextBoxColumn20
             // 
@@ -1051,29 +1075,6 @@
             dataGridViewImageColumn4.ReadOnly = true;
             dataGridViewImageColumn4.Resizable = DataGridViewTriState.True;
             dataGridViewImageColumn4.Width = 40;
-            // 
-            // label13
-            // 
-            label13.AutoSize = true;
-            label13.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label13.ForeColor = Color.FromArgb(64, 64, 64);
-            label13.Location = new Point(14, 61);
-            label13.Name = "label13";
-            label13.Size = new Size(373, 21);
-            label13.TabIndex = 7;
-            label13.Text = "Suivi des paiements reçus – Clients et autres sources";
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.BackColor = Color.Transparent;
-            label12.Font = new Font("Segoe UI", 27.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label12.ForeColor = Color.Black;
-            label12.Location = new Point(3, 15);
-            label12.Name = "label12";
-            label12.Size = new Size(271, 50);
-            label12.TabIndex = 8;
-            label12.Text = "Encaissements";
             // 
             // IncomesPayment
             // 

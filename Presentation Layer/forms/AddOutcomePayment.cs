@@ -1,4 +1,4 @@
-﻿using BusinessAccessLayer;
+﻿using BussinessAcesssLayer;
 using BussinessAcesssLayer;
 using DataAccessLayer.Models;
 using freelanceProject1.Presentation_Layer.usefulFunction;
@@ -534,18 +534,29 @@ namespace freelanceProject1.Presentation_Layer.forms
                 if (Convert.ToBoolean(row.Cells["hi"].Value) == true)
                 {
                     var numeroFacture = row.Cells["NumeroFacture"].Value?.ToString();
-                    var total = Convert.ToDecimal(row.Cells["Total"].Value);
-                    var payed = Convert.ToDecimal(row.Cells["Payed"].Value);
-                    decimal montantRestant = total - payed;
 
-                    facturesChoisies.Add(new FactureSelectionnee
+                    string totalStr = row.Cells["Total"].Value?.ToString()?.Split(' ')[0].Replace(",", ".");
+                    string payedStr = row.Cells["Payed"].Value?.ToString()?.Split(' ')[0].Replace(",", ".");
+
+                    if (decimal.TryParse(totalStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal total) &&
+                        decimal.TryParse(payedStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal payed))
                     {
-                        NumeroFacture = numeroFacture,
-                        MontantAPayer = montantRestant,
-                        factureid = usefulFunction.UsefulFuncitonClass.ExtractIdFromFactureName(numeroFacture)
-                    });
+                        decimal montantRestant = total - payed;
+
+                        facturesChoisies.Add(new FactureSelectionnee
+                        {
+                            NumeroFacture = numeroFacture,
+                            MontantAPayer = montantRestant,
+                            factureid = usefulFunction.UsefulFuncitonClass.ExtractIdFromFactureName(numeroFacture)
+                        });
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Erreur de conversion pour la facture: {numeroFacture}");
+                    }
                 }
             }
+
 
             if (facturesChoisies.Count == 0)
             {

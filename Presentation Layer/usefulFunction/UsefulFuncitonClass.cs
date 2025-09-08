@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using BussinessAcesssLayer;
 using System.Drawing.Drawing2D;
 using System.Runtime.CompilerServices;
-using BusinessAccessLayer;
+using BussinessAcesssLayer;
 using System.Windows.Forms;
 using static Dtos.Dtos;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -294,7 +294,26 @@ namespace freelanceProject1.Presentation_Layer.usefulFunction
 
 
 
+        public static void ApplyTopMostFix(Form form)
+        {
+            void Fix(Control parent)
+            {
+                foreach (Control ctrl in parent.Controls)
+                {
+                    if (ctrl is Guna2DateTimePicker dtp)
+                    {
+                        dtp.DropDown += (s, e) => form.TopMost = false;
+                        dtp.CloseUp += (s, e) => form.TopMost = true;
+                    }
+                    else
+                    {
+                        Fix(ctrl); // Recurse
+                    }
+                }
+            }
 
+            Fix(form);
+        }
 
 
         public static void loadcomboboxofFournisseurWithDataWithNoAsync(Guna2ComboBox guna2ComboBox2)
@@ -553,7 +572,45 @@ namespace freelanceProject1.Presentation_Layer.usefulFunction
 
             guna2DataGridView11.ResumeLayout();
         }
-        
+
+
+        public static void filterCombobox(Guna2DataGridView guna2DataGridView11, Guna2ComboBox guna2TextBox1)
+        {
+            string searchText = guna2TextBox1.SelectedItem.ToString().ToLower().Trim();
+            bool isSearchEmpty = string.IsNullOrEmpty(searchText);
+
+            guna2DataGridView11.SuspendLayout();
+
+            foreach (DataGridViewRow row in guna2DataGridView11.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                bool matchFound = false;
+
+                if (isSearchEmpty)
+                {
+                    matchFound = true;
+                }
+                else
+                {
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        string cellValue = cell.Value?.ToString().ToLower() ?? "";
+                        if (cellValue.Contains(searchText))
+                        {
+                            matchFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                row.Visible = matchFound;
+            }
+
+            guna2DataGridView11.ResumeLayout();
+        }
+
+
 
         public static void TextColor(decimal a ,Label label29)
         {

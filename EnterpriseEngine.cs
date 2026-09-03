@@ -282,9 +282,10 @@ public sealed class EnterpriseEngine
                 var boxResult = test.HandleAction("save-cash-box", JsonSerializer.SerializeToElement(new { name = "Caisse Acceptance", companyId = company.Id, siteId = seed.Sites.First(x => x.CompanyId == company.Id).Id, currency = "MAD" }, EnterpriseJson.Options));
                 var box = test.GetSnapshot().CashBoxes.First(x => x.Name == "Caisse Acceptance");
                 var movementResult = test.HandleAction("save-cash-movement", JsonSerializer.SerializeToElement(new { cashBoxId = box.Id, kind = "Entrée", amount = 250m, label = "Fonds de caisse Acceptance" }, EnterpriseJson.Options));
-                var snapshot = test.GetSnapshot(); var movement = snapshot.CashMovements.FirstOrDefault(x => x.CashBoxId == box.Id);
-                if (!boxResult.Success || !movementResult.Success || movement is null || snapshot.CashBoxes.First(x => x.Id == box.Id).BalanceMad != 250m || !snapshot.TreasuryMovements.Any(x => x.CashBoxId == box.Id) || !snapshot.AccountingEntries.Any(x => x.Id == movement.AccountingEntryId)) throw new InvalidOperationException("Mouvement, solde ou impacts de caisse manquants.");
-                return "Caisse, trésorerie et comptabilité synchronisées";
+                var outResult = test.HandleAction("save-cash-movement", JsonSerializer.SerializeToElement(new { cashBoxId = box.Id, kind = "Sortie", amount = 90m, label = "Achat caisse Acceptance" }, EnterpriseJson.Options));
+                var snapshot = test.GetSnapshot(); var movement = snapshot.CashMovements.FirstOrDefault(x => x.CashBoxId == box.Id && x.Direction == TreasuryDirection.Inflow); var outflow = snapshot.CashMovements.FirstOrDefault(x => x.CashBoxId == box.Id && x.Direction == TreasuryDirection.Outflow);
+                if (!boxResult.Success || !movementResult.Success || !outResult.Success || movement is null || outflow is null || snapshot.CashBoxes.First(x => x.Id == box.Id).BalanceMad != 160m || !snapshot.TreasuryMovements.Any(x => x.CashBoxId == box.Id && x.Direction == TreasuryDirection.Outflow && x.AmountMad == 90m) || !snapshot.AccountingEntries.Any(x => x.Id == movement.AccountingEntryId) || !snapshot.AccountingEntries.Any(x => x.Id == outflow.AccountingEntryId)) throw new InvalidOperationException("Mouvement, solde ou impacts de caisse manquants.");
+                return "Entrée +250 MAD, sortie -90 MAD, solde 160 MAD";
             });
             Check(report, "advanced.tax-rule-version-and-toggle", () =>
             {

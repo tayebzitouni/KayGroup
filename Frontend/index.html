@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KAY ONE</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="core-workflows.css">
+  <link rel="stylesheet" href="enterprise-modules.css">
+  <link rel="stylesheet" href="advanced-domains.css">
+  <link rel="stylesheet" href="production-pages.css">
+  <link rel="stylesheet" href="auth-gate.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">K</div>
+        <div><strong>KAY ONE</strong><span>FINANCIAL OS</span></div>
+      </div>
+      <button class="workspace-card" id="workspace-switcher" type="button">
+        <span class="workspace-avatar">KG</span>
+        <span><small>ESPACE DE TRAVAIL</small><strong>KAY Groupe</strong></span>
+        <i>⌄</i>
+      </button>
+      <nav id="main-nav" aria-label="Navigation principale"></nav>
+      <div class="sidebar-bottom">
+        <button class="help-row" data-page="support"><span class="nav-icon" data-icon="help"></span><span>Centre d’aide</span></button>
+        <div class="user-card">
+          <div class="avatar">TZ</div>
+          <div><strong>Tayeb Zitouni</strong><span>Administrateur</span></div>
+          <button type="button" id="user-menu-button" aria-label="Options du profil">•••</button>
+        </div>
+      </div>
+    </aside>
+
+    <section class="workspace">
+      <header class="topbar">
+        <div class="mobile-brand">KAY ONE</div>
+        <label class="global-search"><span class="nav-icon" data-icon="search"></span><input id="global-search" placeholder="Rechercher une facture, un tiers, un montant…"><kbd>Ctrl K</kbd></label>
+        <div class="top-actions">
+          <button type="button" class="icon-button" id="notification-button" title="Notifications"><span class="nav-icon" data-icon="bell"></span><span class="notification-dot"></span></button>
+          <button type="button" class="sync-chip" id="sync-button"><span class="live-dot"></span> Synchronisé <strong>à l’instant</strong></button>
+          <button type="button" class="primary-button compact" id="quick-add"><span class="nav-icon" data-icon="plus"></span> Nouvelle opération</button>
+        </div>
+      </header>
+      <main id="app-content" tabindex="-1"></main>
+    </section>
+  </div>
+  <div id="toast-host" aria-live="polite"></div>
+  <script src="app.js"></script>
+  <script src="core-workflows.js"></script>
+  <script src="enterprise-modules.js"></script>
+  <script src="enterprise-integration.js"></script>
+  <script src="advanced-domains.js"></script>
+  <script src="advanced-integration.js"></script>
+  <script src="production-pages.js"></script>
+  <script src="auth-gate.js"></script>
+</body>
+</html>

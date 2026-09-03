@@ -64,6 +64,10 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+.engine-acceptance/
+.engine-verify/
+KAY-ONE-*-win-x64/
+KAY-ONE-*-win-x64.zip
 
 # Tye
 .tye/

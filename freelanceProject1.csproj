@@ -1,84 +1,37 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows</TargetFramework>
-		<Nullable>enable</Nullable>
-		<UseWindowsForms>true</UseWindowsForms>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<PlatformTarget>x64</PlatformTarget>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<None Remove="calendar.html" />
-		<None Remove="Resources\icons8-create-32.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="calendar.html">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="ClosedXML" Version="0.105.0" />
-		<PackageReference Include="ExcelDataReader" Version="3.7.0" />
-		<PackageReference Include="ExcelDataReader.DataSet" Version="3.7.0" />
-		<PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.7" />
-		<PackageReference Include="HIC.System.Windows.Forms.DataVisualization" Version="1.0.1" />
-		<PackageReference Include="HtmlAgilityPack" Version="1.12.1" />
-		<PackageReference Include="itext" Version="9.2.0" />
-		<PackageReference Include="itext7" Version="9.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3296.44" />
-		<PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.6" />
-		<PackageReference Include="PdfiumViewer" Version="2.13.0" />
-		<PackageReference Include="PdfiumViewer.Native.x86_64.v8-xfa" Version="2018.4.8.256" />
-		<PackageReference Include="PdfPig" Version="0.1.10" />
-		<PackageReference Include="Syncfusion.Licensing" Version="29.2.9" />
-		<PackageReference Include="System.Net.Http.Json" Version="9.0.7" />
-		<PackageReference Include="Tesseract" Version="5.2.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\BussinessAcesssLayer\BussinessAcesssLayer.csproj" />
-		<ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
-		<ProjectReference Include="..\Dtos\Dtos.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="BussinessAcesssLayer">
-	    <HintPath>..\FreelanceProjectBussinessAcessLayer\bin\Debug\net8.0\BussinessAcesssLayer.dll</HintPath>
-	  </Reference>
-	  <Reference Include="Dtos">
-	    <HintPath>..\Dtos\bin\Debug\net8.0\Dtos.dll</HintPath>
-	  </Reference>
-	  <Reference Include="FrelelanceProjectBussinessAcesssLayer">
-	    <HintPath>..\FreelanceProjectBussinessAcessLayer\bin\Debug\net8.0\FrelelanceProjectBussinessAcesssLayer.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="Properties\Resources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Properties\Resources.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-	</ItemGroup>
-
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>KayOne</RootNamespace>
+    <AssemblyName>KayOne</AssemblyName>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>KAY ONE Financial &amp; Business Operating System</Product>
+    <Company>KAY Groupe</Company>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="MainForm.cs" />
+    <Compile Include="WebDashboardForm.cs" />
+    <Compile Include="EnterpriseEngine.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Frontend\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3650.58" />
+  </ItemGroup>
+  <Target Name="RemoveUnusedWebView2WpfReference" BeforeTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <Reference Remove="@(Reference)" Condition="'%(Reference.Filename)' == 'Microsoft.Web.WebView2.Wpf'" />
+    </ItemGroup>
+  </Target>
 </Project>

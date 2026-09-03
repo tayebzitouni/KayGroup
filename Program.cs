@@ -1,99 +1,30 @@
+namespace KayOne;
 
-using BussinessAcesssLayer;
-using DataAccessLayer;
-using DataAccessLayer.Models;
-using freelanceProject1.Presentation_Layer;
-using freelanceProject1.Presentation_Layer.forms;
-
-namespace freelanceProject1
+internal static class Program
 {
-    internal static class Program
+    [STAThread]
+    private static void Main()
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        if (Environment.GetEnvironmentVariable("KAYONE_ENGINE_TEST") == "1")
         {
-
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            using var appDbContext = new AppDbContext();
-
-            appDbContext.Database.EnsureCreated();
-
-
-            SettingsService.Initialize(appDbContext);
-
-
-            var settings = appDbContext.UserSettings.FirstOrDefault();
-            if (settings == null || settings.Id == 0)
+            var engine = new EnterpriseEngine(new EnterpriseEngineOptions
             {
-                settings = new UserSettings();
-                UserSettingsManager.Save(appDbContext, settings);
-            }
-
-            var settings3 = appDbContext.Entities.FirstOrDefault();
-            if (settings3 == null || settings3.id == 0)
+                DataFilePath = Environment.GetEnvironmentVariable("KAYONE_DATA_FILE"),
+                SeedDemoData = true,
+                EnforceAuthorization = true
+            });
+            var report = engine.RunAcceptanceChecks();
+            var path = Environment.GetEnvironmentVariable("KAYONE_TEST_REPORT")
+                ?? Path.Combine(Path.GetTempPath(), "kayone-engine-acceptance.json");
+            File.WriteAllText(path, System.Text.Json.JsonSerializer.Serialize(report, new System.Text.Json.JsonSerializerOptions
             {
-                try
-                {
-                    settings3 = new Entity
-                    {
-                        Name = "Kay Group ",
-                        code = "KAY-GRP",
-                        Email = "hi@gmail.com",
-                        Adress = "hh",
-                        ICE= "gh",
-                        Patent ="hg",
-                        Nom = "gg",
-                        CNSS = "hf",
-                        Phone="ae",
-                        RC= "fdhd",
-                        identifiantfiscal ="jfd",
-        
-                    };
-                    appDbContext.Entities.Add(settings3);
-                    appDbContext.SaveChanges();
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("There is Error");
-                }
-            }
-
-            var settings2 = appDbContext.Utilisateurs.FirstOrDefault();
-            if (settings2 == null || settings2.Id == 0)
-            {
-                try
-                {
-                    settings2 = new Utilisatuer
-                    {
-                        Name = "Admin",
-                        Email = "Admin@gmail.com",
-                        phone = "+213",
-                        Role = "Admin",
-                        Password = "123456",
-                        EntityId = appDbContext.Entities.FirstOrDefault().id
-                    };
-                    appDbContext.Utilisateurs.Add(settings2);
-                    appDbContext.SaveChanges();
-                }
-                catch(Exception)
-                {
-                    MessageBox.Show("There is Error");
-                }
-            }
-            Application.Run(new LogIn());
-          
-           
-            
-
-
-
-
-
-
+                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            }));
+            Environment.ExitCode = report.Success ? 0 : 1;
+            return;
         }
+        ApplicationConfiguration.Initialize();
+        Application.Run(new WebDashboardForm());
     }
-};
+}

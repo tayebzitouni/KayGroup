@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Administration - KAY ONE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed-variant": "#39475f",
+                        "background": "#f6f9ff",
+                        "surface-tint": "#515f78",
+                        "surface-container-low": "#eef4fc",
+                        "tertiary-fixed-dim": "#6bd8cb",
+                        "on-tertiary-container": "#0c9488",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#76849f",
+                        "surface": "#f6f9ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#dde3eb",
+                        "inverse-on-surface": "#ebf1f9",
+                        "surface-dim": "#d4dbe2",
+                        "surface-bright": "#f6f9ff",
+                        "secondary-fixed": "#dbe1ff",
+                        "secondary-container": "#316bf3",
+                        "on-surface-variant": "#44474d",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#e8eef6",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#fefcff",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "tertiary-container": "#00201d",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c5c6cd",
+                        "primary": "#000000",
+                        "surface-variant": "#dde3eb",
+                        "inverse-primary": "#b9c7e4",
+                        "inverse-surface": "#2b3137",
+                        "primary-fixed": "#d6e3ff",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#89f5e7",
+                        "secondary": "#0051d5",
+                        "on-surface": "#161c22",
+                        "on-tertiary-fixed": "#00201d",
+                        "primary-fixed-dim": "#b9c7e4",
+                        "on-primary-fixed": "#0d1c32",
+                        "outline": "#75777e",
+                        "on-secondary-fixed": "#00174b",
+                        "primary-container": "#0d1c32",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "tertiary": "#000000",
+                        "surface-container-high": "#e3e9f1",
+                        "on-background": "#161c22",
+                        "on-tertiary-fixed-variant": "#005049",
+                        "on-tertiary": "#ffffff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "unit": "4px",
+                        "sidebar-width": "260px",
+                        "component-gap-tight": "8px",
+                        "gutter": "16px",
+                        "container-padding": "24px"
+                    },
+                    fontFamily: {
+                        "title-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"]
+                    },
+                    fontSize: {
+                        "title-sm": ["16px", { lineHeight: "24px", fontWeight: "600" }],
+                        "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }],
+                        "label-caps": ["11px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+                        "display-lg": ["30px", { lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "headline-md": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "data-mono": ["13px", { lineHeight: "18px", fontWeight: "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex">
+<!-- SideNavBar (from JSON) -->
+<nav class="fixed left-0 top-0 h-full w-[260px] bg-primary-container flex flex-col py-[24px] z-50">
+<!-- Header -->
+<div class="px-[24px] mb-[32px]">
+<div class="flex items-center gap-[12px]">
+<div class="w-[32px] h-[32px] bg-on-primary rounded flex items-center justify-center">
+<span class="font-display-lg text-[20px] text-primary-container leading-none">K</span>
+</div>
+<div>
+<h1 class="font-display-lg text-[20px] text-on-primary tracking-tight leading-none mb-1">KAY ONE</h1>
+<p class="font-body-sm text-on-primary-container opacity-70 leading-none">Financial Ops</p>
+</div>
+</div>
+</div>
+<!-- CTA -->
+<div class="px-[16px] mb-[24px]">
+<button class="w-full bg-secondary text-on-secondary font-title-sm py-[8px] px-[16px] rounded hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+                Nouvelle opération
+            </button>
+</div>
+<!-- Navigation Tabs -->
+<div class="flex-1 overflow-y-auto">
+<ul class="flex flex-col gap-[4px] px-[8px]">
+<!-- Inactive Tabs -->
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+                        Accueil
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+                        Nouvelle opération
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+                        Ventes
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                        Achats
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">account_balance</span>
+                        Trésorerie
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+                        Fiscalité
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+                        Comptabilité
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">pending_actions</span>
+                        Balance âgée
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">format_list_bulleted</span>
+                        Journal global
+                    </a>
+</li>
+<!-- Active Tab: Administration -->
+<li>
+<a class="text-on-primary font-bold border-l-[2px] border-secondary pl-[12px] flex items-center gap-[12px] py-[8px] bg-on-primary-fixed-variant rounded-r transition-all" href="#">
+<span class="material-symbols-outlined text-[20px] fill">settings</span>
+                        Administration
+                    </a>
+</li>
+</ul>
+</div>
+<!-- Footer Tabs -->
+<div class="mt-auto px-[8px] pt-[16px]">
+<ul class="flex flex-col gap-[4px]">
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                        Aide
+                    </a>
+</li>
+<li>
+<a class="text-on-primary-container font-body-md pl-4 flex items-center gap-[12px] py-[8px] rounded hover:bg-on-primary-fixed-variant hover:text-on-primary transition-colors duration-200 ease-in-out opacity-70 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+                        Déconnexion
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<div class="ml-[260px] flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar (from JSON) -->
+<header class="bg-surface border-b border-outline-variant h-16 sticky top-0 z-40 flex justify-between items-center w-full px-[16px]">
+<!-- Navigation Links -->
+<div class="flex items-center gap-[24px]">
+<a class="text-on-surface-variant font-body-md hover:text-secondary cursor-pointer transition-opacity" href="#">Vue d'ensemble</a>
+<a class="text-secondary font-title-sm border-b-2 border-secondary pb-[2px] cursor-pointer transition-opacity" href="#">Rapports</a>
+</div>
+<!-- Right Actions -->
+<div class="flex items-center gap-[16px]">
+<div class="flex items-center gap-[8px]">
+<button class="p-2 text-on-surface-variant hover:text-secondary rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-secondary rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">calendar_today</span>
+</button>
+</div>
+<div class="h-[24px] w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-[8px]">
+<button class="font-title-sm text-on-surface border border-outline-variant py-[6px] px-[16px] rounded hover:bg-surface-variant transition-colors">Ajouter</button>
+<button class="font-title-sm bg-secondary text-on-secondary py-[6px] px-[16px] rounded hover:opacity-90 transition-opacity">Exporter</button>
+</div>
+<div class="w-[32px] h-[32px] rounded-full bg-surface-variant overflow-hidden border border-outline-variant flex items-center justify-center">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A professional corporate headshot of a business user in a modern office setting. The lighting is bright and even, typical of a high-end corporate application profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYKsMy3_IrgIPrWUcaE0p2LGx5SOBcMUlvGm8ewBJGKgGAUBfiXaJhtJMQBYfFGkZvF_Cb7PaVct7p64rAomLWfHBtGV74nRPXfitGV4wiW-PcaJHQbm_GAZHNM8pyPTFTg_wip7VZn6hjRxYFC84PQqB-yKsBm5jHhh32b7OSolXZPP-_X1I9Mw1ZWWsWlTJUV4L_t9GNTx79htkqCpYS90G9fpZjIeme-5zIgft9obXQJmKnAs7ULw"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-[24px] bg-background">
+<!-- Page Header -->
+<div class="mb-[24px] flex items-center justify-between">
+<div>
+<h2 class="font-display-lg text-on-surface">Administration</h2>
+<p class="font-body-md text-on-surface-variant mt-[4px]">Gérez les paramètres globaux, les utilisateurs et la configuration financière de votre entreprise.</p>
+</div>
+</div>
+<!-- Main Bento Grid -->
+<div class="grid grid-cols-12 gap-[16px]">
+<!-- Paramètres Société (Left Column - 8 cols) -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded p-[24px] shadow-sm flex flex-col">
+<div class="flex items-center gap-[8px] mb-[16px] border-b border-outline-variant pb-[16px]">
+<span class="material-symbols-outlined text-secondary">domain</span>
+<h3 class="font-headline-md text-on-surface">Paramètres société</h3>
+</div>
+<form class="space-y-[16px]">
+<div class="grid grid-cols-2 gap-[16px]">
+<div class="flex flex-col gap-[4px]">
+<label class="font-label-caps text-on-surface-variant uppercase">Raison Sociale</label>
+<input class="border border-outline-variant rounded px-[12px] py-[8px] font-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all bg-surface-bright" type="text" value="KAY ONE Technologies"/>
+</div>
+<div class="flex flex-col gap-[4px]">
+<label class="font-label-caps text-on-surface-variant uppercase">Numéro d'Identification (SIRET/TVA)</label>
+<input class="border border-outline-variant rounded px-[12px] py-[8px] font-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all bg-surface-bright" type="text" value="FR89 123456789"/>
+</div>
+</div>
+<div class="flex flex-col gap-[4px]">
+<label class="font-label-caps text-on-surface-variant uppercase">Adresse du Siège</label>
+<input class="border border-outline-variant rounded px-[12px] py-[8px] font-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all bg-surface-bright" type="text" value="128 Rue de la Paix, 75001 Paris, France"/>
+</div>
+<div class="grid grid-cols-3 gap-[16px]">
+<div class="flex flex-col gap-[4px]">
+<label class="font-label-caps text-on-surface-variant uppercase">Code NAF</label>
+<input class="border border-outline-variant rounded px-[12px] py-[8px] font-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all bg-surface-bright" type="text" value="6201Z"/>
+</div>
+<div class="flex flex-col gap-[4px]">
+<label class="font-label-caps text-on-surface-variant uppercase">Forme Juridique</label>
+<select class="border border-outline-variant rounded px-[12px] py-[8px] font-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all bg-surface-bright appearance-none">
+<option>SAS</option>
+<option>SARL</option>
+<option>SA</option>
+</select>
+</div>
+<div class="flex flex-col gap-[4px]">
+<label class="font-label-caps text-on-surface-variant uppercase">Capital Social</label>
+<div class="relative">
+<input class="w-full border border-outline-variant rounded px-[12px] py-[8px] pl-[28px] font-data-mono text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all bg-surface-bright text-right" type="text" value="50 000"/>
+<span class="absolute left-[12px] top-1/2 -translate-y-1/2 font-body-md text-on-surface-variant">€</span>
+</div>
+</div>
+</div>
+<div class="flex justify-end pt-[16px]">
+<button class="font-title-sm bg-secondary text-on-secondary py-[8px] px-[24px] rounded hover:opacity-90 transition-opacity" type="button">Enregistrer les modifications</button>
+</div>
+</form>
+</div>
+<!-- Devises et Taux (Right Column - 4 cols) -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-lowest border border-outline-variant rounded p-[24px] shadow-sm flex flex-col">
+<div class="flex items-center justify-between mb-[16px] border-b border-outline-variant pb-[16px]">
+<div class="flex items-center gap-[8px]">
+<span class="material-symbols-outlined text-secondary">currency_exchange</span>
+<h3 class="font-headline-md text-on-surface">Devises &amp; Taux</h3>
+</div>
+<span class="px-[8px] py-[2px] bg-surface-variant text-on-surface-variant font-label-caps uppercase rounded">Sync Auto</span>
+</div>
+<div class="flex flex-col gap-[16px]">
+<div class="flex flex-col gap-[4px]">
+<label class="font-label-caps text-on-surface-variant uppercase">Devise de Référence</label>
+<select class="border border-outline-variant rounded px-[12px] py-[8px] font-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all bg-surface-bright appearance-none">
+<option>EUR - Euro</option>
+<option>USD - US Dollar</option>
+</select>
+</div>
+<div>
+<label class="font-label-caps text-on-surface-variant uppercase block mb-[8px]">Taux de change actifs</label>
+<div class="flex flex-col gap-[8px]">
+<div class="flex items-center justify-between p-[8px] border border-outline-variant rounded bg-surface-bright">
+<div class="flex items-center gap-[8px]">
+<div class="w-[24px] h-[16px] bg-outline-variant rounded-sm overflow-hidden flex items-center justify-center text-[10px] text-white font-bold">US</div>
+<span class="font-body-sm text-on-surface">USD/EUR</span>
+</div>
+<span class="font-data-mono text-on-surface">0.9241</span>
+</div>
+<div class="flex items-center justify-between p-[8px] border border-outline-variant rounded bg-surface-bright">
+<div class="flex items-center gap-[8px]">
+<div class="w-[24px] h-[16px] bg-outline-variant rounded-sm overflow-hidden flex items-center justify-center text-[10px] text-white font-bold">GB</div>
+<span class="font-body-sm text-on-surface">GBP/EUR</span>
+</div>
+<span class="font-data-mono text-on-surface">1.1682</span>
+</div>
+<div class="flex items-center justify-between p-[8px] border border-outline-variant rounded bg-surface-bright">
+<div class="flex items-center gap-[8px]">
+<div class="w-[24px] h-[16px] bg-outline-variant rounded-sm overflow-hidden flex items-center justify-center text-[10px] text-white font-bold">CH</div>
+<span class="font-body-sm text-on-surface">CHF/EUR</span>
+</div>
+<span class="font-data-mono text-on-surface">1.0345</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Gestion des utilisateurs & Rôles (Full Width - 12 cols) -->
+<div class="col-span-12 bg-surface-container-lowest border border-outline-variant rounded shadow-sm overflow-hidden flex flex-col">
+<div class="p-[24px] border-b border-outline-variant flex items-center justify-between bg-surface-bright">
+<div class="flex items-center gap-[8px]">
+<span class="material-symbols-outlined text-secondary">group</span>
+<h3 class="font-headline-md text-on-surface">Gestion des utilisateurs &amp; Rôles</h3>
+</div>
+<button class="font-title-sm bg-secondary text-on-secondary py-[6px] px-[16px] rounded hover:opacity-90 transition-opacity flex items-center gap-[4px]">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+                            Nouvel utilisateur
+                        </button>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="py-[8px] px-[24px] font-label-caps text-on-surface-variant uppercase font-bold">Utilisateur</th>
+<th class="py-[8px] px-[24px] font-label-caps text-on-surface-variant uppercase font-bold">Email</th>
+<th class="py-[8px] px-[24px] font-label-caps text-on-surface-variant uppercase font-bold">Rôle</th>
+<th class="py-[8px] px-[24px] font-label-caps text-on-surface-variant uppercase font-bold">Dernière connexion</th>
+<th class="py-[8px] px-[24px] font-label-caps text-on-surface-variant uppercase font-bold">Statut</th>
+<th class="py-[8px] px-[24px] font-label-caps text-on-surface-variant uppercase font-bold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm">
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="py-[8px] px-[24px]">
+<div class="flex items-center gap-[12px]">
+<div class="w-[28px] h-[28px] rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-[12px]">JD</div>
+<span class="font-title-sm text-on-surface">Jean Dupont</span>
+</div>
+</td>
+<td class="py-[8px] px-[24px] text-on-surface-variant">jean.dupont@kayone.com</td>
+<td class="py-[8px] px-[24px]">
+<span class="px-[8px] py-[2px] bg-secondary-container text-on-secondary-container font-label-caps rounded">Administrateur</span>
+</td>
+<td class="py-[8px] px-[24px] font-data-mono text-on-surface-variant">24/10/2023 09:12</td>
+<td class="py-[8px] px-[24px]">
+<span class="px-[8px] py-[2px] bg-tertiary-fixed-dim text-on-tertiary-container font-label-caps rounded">Actif</span>
+</td>
+<td class="py-[8px] px-[24px] text-right">
+<button class="text-on-surface-variant hover:text-secondary p-[4px]">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="py-[8px] px-[24px]">
+<div class="flex items-center gap-[12px]">
+<div class="w-[28px] h-[28px] rounded-full bg-surface-variant text-on-surface-variant border border-outline-variant flex items-center justify-center font-bold text-[12px]">ML</div>
+<span class="font-title-sm text-on-surface">Marie Laurent</span>
+</div>
+</td>
+<td class="py-[8px] px-[24px] text-on-surface-variant">marie.laurent@kayone.com</td>
+<td class="py-[8px] px-[24px]">
+<span class="px-[8px] py-[2px] bg-surface-variant text-on-surface-variant font-label-caps rounded">Comptable</span>
+</td>
+<td class="py-[8px] px-[24px] font-data-mono text-on-surface-variant">23/10/2023 16:45</td>
+<td class="py-[8px] px-[24px]">
+<span class="px-[8px] py-[2px] bg-tertiary-fixed-dim text-on-tertiary-container font-label-caps rounded">Actif</span>
+</td>
+<td class="py-[8px] px-[24px] text-right">
+<button class="text-on-surface-variant hover:text-secondary p-[4px]">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-[8px] px-[24px]">
+<div class="flex items-center gap-[12px]">
+<div class="w-[28px] h-[28px] rounded-full bg-surface-variant text-on-surface-variant border border-outline-variant flex items-center justify-center font-bold text-[12px]">PA</div>
+<span class="font-title-sm text-on-surface">Paul Atréides</span>
+</div>
+</td>
+<td class="py-[8px] px-[24px] text-on-surface-variant">paul.a@kayone.com</td>
+<td class="py-[8px] px-[24px]">
+<span class="px-[8px] py-[2px] bg-surface-variant text-on-surface-variant font-label-caps rounded">Auditeur</span>
+</td>
+<td class="py-[8px] px-[24px] font-data-mono text-on-surface-variant">15/10/2023 11:20</td>
+<td class="py-[8px] px-[24px]">
+<span class="px-[8px] py-[2px] bg-error-container text-on-error-container font-label-caps rounded">Inactif</span>
+</td>
+<td class="py-[8px] px-[24px] text-right">
+<button class="text-on-surface-variant hover:text-secondary p-[4px]">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

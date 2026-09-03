@@ -9,7 +9,7 @@ Application Windows de gestion financière intégrée pour KAY Groupe. L’inter
 1. Ouvrez le dossier `KAY-ONE-Client-MVP-1.0.0-win-x64`.
 2. Double-cliquez sur `KayOne.exe`.
 3. Au premier démarrage, créez l’administrateur avec un mot de passe d’au moins 12 caractères.
-4. Ajoutez la clé affichée dans Microsoft Authenticator, Google Authenticator ou 1Password, puis saisissez le code à six chiffres.
+4. Connectez-vous avec le compte administrateur créé.
 
 Microsoft Edge WebView2 Runtime est requis. Il est inclus par défaut dans Windows 11 et les versions récentes de Windows 10.
 

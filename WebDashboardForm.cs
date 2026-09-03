@@ -28,8 +28,6 @@ public sealed class WebDashboardForm : Form
     private readonly System.Windows.Forms.Timer sessionTimer = new() { Interval = 30_000 };
     private EnterpriseActor? authenticatedActor;
     private EnterpriseUser? authenticatedUser;
-    private string? pendingMfaChallenge;
-    private bool pendingMfaEnrollment;
     private DateTimeOffset lastActivityAt;
     private bool smokeTestStarted;
     private bool captureStarted;
@@ -225,11 +223,6 @@ public sealed class WebDashboardForm : Form
             BeginAuthentication(ReadText(payload, "email") ?? string.Empty, ReadText(payload, "password") ?? string.Empty);
             return true;
         }
-        if (type.Equals("verify-mfa", StringComparison.OrdinalIgnoreCase))
-        {
-            CompleteMfa(ReadText(payload, "code") ?? string.Empty);
-            return true;
-        }
         if (type.Equals("logout", StringComparison.OrdinalIgnoreCase))
         {
             ClearSession();
@@ -247,45 +240,17 @@ public sealed class WebDashboardForm : Form
             EstablishSession(result);
             return;
         }
-        if (!result.PasswordVerified || string.IsNullOrWhiteSpace(result.ChallengeToken))
+        if (!result.PasswordVerified)
         {
             SendMessage(new { type = "auth-error", stage = "login", email, message = result.Message });
             return;
         }
-        pendingMfaChallenge = result.ChallengeToken;
-        pendingMfaEnrollment = result.RequiresMfaEnrollment;
-        if (pendingMfaEnrollment)
-        {
-            var enrollment = engine.BeginMfaEnrollment(result.ChallengeToken);
-            SendMessage(new { type = "auth-mfa-enrollment", email, secret = enrollment.SecretBase32, otpAuthUri = enrollment.OtpAuthUri, expiresAt = enrollment.ExpiresAt });
-        }
-        else SendMessage(new { type = "auth-mfa-required", email, message = result.Message });
-    }
-
-    private void CompleteMfa(string code)
-    {
-        if (string.IsNullOrWhiteSpace(pendingMfaChallenge))
-        {
-            SendMessage(new { type = "auth-error", stage = "mfa", message = "Le défi MFA a expiré. Reconnectez-vous." });
-            return;
-        }
-        var result = pendingMfaEnrollment
-            ? engine.ConfirmMfaEnrollment(pendingMfaChallenge, code)
-            : engine.VerifyMfaChallenge(pendingMfaChallenge, code);
-        if (!result.Success || result.Actor is null || result.User is null)
-        {
-            SendMessage(new { type = "auth-error", stage = "mfa", message = result.Message });
-            return;
-        }
-        EstablishSession(result);
     }
 
     private void EstablishSession(EnterpriseAuthenticationResult result)
     {
         authenticatedActor = result.Actor;
         authenticatedUser = result.User;
-        pendingMfaChallenge = null;
-        pendingMfaEnrollment = false;
         lastActivityAt = DateTimeOffset.Now;
         SendAuthSuccess();
         SendSnapshot();
@@ -302,7 +267,7 @@ public sealed class WebDashboardForm : Form
         if (authenticatedUser is null) return;
         var snapshot = engine.GetSnapshot(CurrentActor());
         var role = snapshot.Roles.FirstOrDefault(item => authenticatedUser.RoleIds.Contains(item.Id))?.Name ?? "Utilisateur";
-        SendMessage(new { type = "auth-success", user = new { authenticatedUser.Id, authenticatedUser.DisplayName, authenticatedUser.Email, authenticatedUser.MfaEnabled, role } });
+        SendMessage(new { type = "auth-success", user = new { authenticatedUser.Id, authenticatedUser.DisplayName, authenticatedUser.Email, role } });
     }
 
     private void CheckSessionTimeout()
@@ -318,8 +283,6 @@ public sealed class WebDashboardForm : Form
     {
         authenticatedActor = null;
         authenticatedUser = null;
-        pendingMfaChallenge = null;
-        pendingMfaEnrollment = false;
     }
 
     private void SendSnapshot()
@@ -351,7 +314,7 @@ public sealed class WebDashboardForm : Form
                 parties = snapshot.Parties.Select(x => new { code = x.InternalCode, name = $"{x.InternalCode} · {x.Name}", kind = PartyKindLabel(x.Kind), x.PaymentTermsDays }),
                 bankAccounts = snapshot.BankAccounts.Select(x => new { x.Name, bank = x.BankName, x.Iban, x.Currency, balance = x.BalanceMad }),
                 exchangeRates = snapshot.ExchangeRates.GroupBy(x => x.Currency).ToDictionary(x => x.Key, x => x.OrderByDescending(rate => rate.RateDate).First().RateToMad),
-                currentUser = currentUser is null ? null : new { currentUser.Id, currentUser.DisplayName, currentUser.Email, currentUser.MfaEnabled, role = snapshot.Roles.FirstOrDefault(role => currentUser.RoleIds.Contains(role.Id))?.Name ?? "Utilisateur" },
+                currentUser = currentUser is null ? null : new { currentUser.Id, currentUser.DisplayName, currentUser.Email, role = snapshot.Roles.FirstOrDefault(role => currentUser.RoleIds.Contains(role.Id))?.Name ?? "Utilisateur" },
                 enterprise = ui
             }
         };

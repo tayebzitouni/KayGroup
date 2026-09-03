@@ -41,7 +41,7 @@ Chaque écriture crée une sauvegarde atomique `enterprise-data.json.bak`. Sauve
 - Paiements avec séparation préparateur/validateur, banques, rapprochement, caisses et balances âgées clients/fournisseurs.
 - Règles TVA/RAS versionnées, écritures équilibrées, immobilisations/amortissements, commissions et notes de frais.
 - Recherche globale par référence, tiers, montant, IBAN et objets liés, avec vue de traçabilité.
-- Authentification locale PBKDF2, MFA TOTP, rôles, périmètres société, expiration de session et audit chaîné par empreinte.
+- Authentification locale PBKDF2, rôles, périmètres société, expiration de session et audit chaîné par empreinte.
 - Tableaux de bord et assistant déterministe alimentés uniquement par le snapshot autorisé.
 
 Les justificatifs et imports sans contenu binaire sont enregistrés comme « en attente du fichier » : l’interface ne prétend pas qu’un fichier a été stocké ou traité par OCR lorsqu’il ne l’a pas été.

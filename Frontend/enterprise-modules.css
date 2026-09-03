@@ -375,14 +375,6 @@
 .ke-security-alert strong { font-size: 9px; }
 .ke-security-alert small { margin-top: 3px; font-size: 8px; line-height: 1.4; }
 .ke-security-alert button { height: 30px; background: #fff; }
-.ke-mfa-row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 11px; border: 1px solid #e4e8ee; border-radius: 8px; }
-.ke-mfa-row > span { display: flex; align-items: center; gap: 9px; }
-.ke-mfa-row svg { width: 17px; height: 17px; color: #576d89; }
-.ke-mfa-row strong, .ke-mfa-row small { display: block; }
-.ke-mfa-row strong { font-size: 9px; }
-.ke-mfa-row small { color: var(--ke-muted); font-size: 8px; margin-top: 3px; }
-.ke-mfa-row .toggle { border: 0; flex: 0 0 32px; }
-.ke-mfa-row .toggle i { display: none; }
 .ke-permission-card { overflow: hidden; }
 .ke-permission-card .ke-table-scroll { margin: 0 -20px -18px; width: calc(100% + 40px); }
 .ke-permission-table { min-width: 790px; }

@@ -70,7 +70,7 @@ Légende : ✅ couvert dans le MVP local · 🟡 partiellement couvert / infrast
 | 54 | Architecture technique cible | 🟡 | Front WebView2/C# local livré; API/PostgreSQL/S3/Data Warehouse non livrés. |
 | 55 | Roadmap IA | ⏳ | File OCR prête; OCR, matching IA, forecasting et anomalies nécessitent les services externes. |
 | 56 | Assistant financier IA | 🟡 | Assistant déterministe sur données réelles; LLM et requêtes serveur à industrialiser. |
-| 57 | Sécurité | 🟡 | Login PBKDF2, MFA TOTP, RBAC, sessions et audit; chiffrement central, PRA et MFA recovery à compléter. |
+| 57 | Sécurité | 🟡 | Login PBKDF2, RBAC, sessions et audit; chiffrement central, PRA et récupération de compte à compléter. |
 | 58 | Séparation des tâches | ✅ | Créateur≠validateur pour opérations et paiements. |
 | 59 | Expérience utilisateur | ✅ | Shell unique, design Stitch, progressive disclosure et retours d’erreur. |
 | 60 | Navigation | ✅ | Deux niveaux principaux et détail en troisième niveau. |
@@ -93,7 +93,7 @@ Légende : ✅ couvert dans le MVP local · 🟡 partiellement couvert / infrast
 - Authentification et menu de session : **6/6** contrôles réussis.
 - Total interface : **187/187** contrôles réussis.
 
-Les tests couvrent notamment l’idempotence, les écritures équilibrées, l’exonération insuffisante, le change, les deux balances âgées, l’audit, la persistance après redémarrage, les commissions, l’amortissement, la caisse, les règles fiscales, les documents en attente de binaire, le maker-checker, PBKDF2/TOTP, l’annulation et le rapprochement.
+Les tests couvrent notamment l’idempotence, les écritures équilibrées, l’exonération insuffisante, le change, les deux balances âgées, l’audit, la persistance après redémarrage, les commissions, l’amortissement, la caisse, les règles fiscales, les documents en attente de binaire, le maker-checker, PBKDF2, l’annulation et le rapprochement.
 
 ## Blocages avant une qualification « production entreprise »
 

@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -174,7 +174,6 @@ public sealed class EnterpriseEngine
                 "cancel-payment" => CancelPayment(JsonGuid(payload, "paymentId", "id") ?? throw new EnterpriseValidationException("Paiement requis."), JsonText(payload, "reason") ?? "Annulation demandée", effectiveActor),
                 "undo-reconciliation" => UndoReconciliation(JsonGuid(payload, "reconciliationId", "id") ?? throw new EnterpriseValidationException("Rapprochement requis."), JsonText(payload, "reason") ?? "Annulation demandée", effectiveActor),
                 "reconcile-selected" => ReconcileSelected(payload, effectiveActor),
-                "toggle-mfa" => ToggleMfa(payload, effectiveActor),
                 "save-security" or "resolve-sod" => SaveSecurity(payload, effectiveActor),
                 "generate-commitments" => GenerateCommitments(effectiveActor),
                 "save-commission-rule" => SaveCommissionRule(payload, effectiveActor),
@@ -325,7 +324,7 @@ public sealed class EnterpriseEngine
                 var securePath = Path.Combine(folder, "secure.json");
                 var secure = new EnterpriseEngine(new EnterpriseEngineOptions { DataFilePath = securePath, SeedDemoData = true, EnforceAuthorization = true, Clock = clock });
                 var s = secure.GetSnapshot(); var adminRole = s.Roles.First(r => r.Name == "Administrateur"); var makerUser = s.Users.First(x => x.RoleIds.Contains(adminRole.Id));
-                var checkerUser = secure.UpsertUser(new EnterpriseUser { DisplayName = "Contrôleur Acceptance", Email = "checker@acceptance.local", IsActive = true, MfaEnabled = true, RoleIds = new List<Guid> { adminRole.Id }, CompanyIds = new List<Guid> { s.Companies[0].Id } }, EnterpriseActor.System);
+                var checkerUser = secure.UpsertUser(new EnterpriseUser { DisplayName = "Contrôleur Acceptance", Email = "checker@acceptance.local", IsActive = true, RoleIds = new List<Guid> { adminRole.Id }, CompanyIds = new List<Guid> { s.Companies[0].Id } }, EnterpriseActor.System);
                 var maker = new EnterpriseActor(makerUser.Id, makerUser.DisplayName); var checker = new EnterpriseActor(checkerUser.Id, checkerUser.DisplayName);
                 var op = secure.CreateOperation(new CreateBusinessOperationRequest { Type = BusinessOperationType.Vente, Nature = "SoD", CompanyId = s.Companies[0].Id, PartyId = s.Parties.First(x => x.Kind == PartyKind.Client).Id, OperationDate = DateOnly.FromDateTime(clock().LocalDateTime), Amount = 1000 }, maker);
                 secure.SubmitOperation(op.Id, null, maker);
@@ -341,17 +340,15 @@ public sealed class EnterpriseEngine
                 var authPath = Path.Combine(folder, "auth.json"); var auth = new EnterpriseEngine(new EnterpriseEngineOptions { DataFilePath = authPath, SeedDemoData = true, EnforceAuthorization = true, Clock = clock });
                 if (auth.HasConfiguredAdministrator) throw new InvalidOperationException("L'initialisation devait demander un mot de passe.");
                 auth.SetupFirstAdministrator("owner@acceptance.local", "Owner Acceptance", "StrongPass!2026");
-                var rejected = auth.Authenticate("owner@acceptance.local", "incorrect-password"); var passwordStage = auth.Authenticate("owner@acceptance.local", "StrongPass!2026");
-                if (rejected.Success || passwordStage.Success || !passwordStage.PasswordVerified || !passwordStage.RequiresMfaEnrollment || string.IsNullOrWhiteSpace(passwordStage.ChallengeToken)) throw new InvalidOperationException("Le mot de passe ne doit pas créer de session avant MFA.");
-                var enrollment = auth.BeginMfaEnrollment(passwordStage.ChallengeToken); var code = GenerateTotp(Base32Decode(enrollment.SecretBase32), clock().ToUnixTimeSeconds() / 30); var accepted = auth.ConfirmMfaEnrollment(passwordStage.ChallengeToken, code);
-                if (!accepted.Success || accepted.Actor is null || accepted.User is null || accepted.User.PasswordHash is not null || accepted.User.MfaSecretBase32 is not null || !auth.HasConfiguredAdministrator || !auth.VerifyAuditChain(out _)) throw new InvalidOperationException("Authentification PBKDF2/TOTP ou audit de connexion incorrect.");
+                var rejected = auth.Authenticate("owner@acceptance.local", "incorrect-password"); var accepted = auth.Authenticate("owner@acceptance.local", "StrongPass!2026");
+                if (rejected.Success || !accepted.Success || !accepted.PasswordVerified || accepted.Actor is null || accepted.User is null || accepted.User.PasswordHash is not null || !auth.HasConfiguredAdministrator || !auth.VerifyAuditChain(out _)) throw new InvalidOperationException("Authentification PBKDF2 ou audit de connexion incorrect.");
                 var securedSnapshot = auth.GetSnapshot(accepted.Actor);
                 var createdUser = auth.HandleAction("create-user", JsonSerializer.SerializeToElement(new { displayName = "Utilisateur Acceptance", email = "user@acceptance.local", roleId = securedSnapshot.Roles.First().Id, companyId = securedSnapshot.Companies.First().Id }, EnterpriseJson.Options), accepted.Actor);
                 if (!createdUser.Success || createdUser.Data is not EnterpriseUser newUser) throw new InvalidOperationException("Création utilisateur impossible depuis le workflow d'administration.");
                 var passwordConfigured = auth.HandleAction("set-user-password", JsonSerializer.SerializeToElement(new { userId = newUser.Id, password = "UserPass!2026" }, EnterpriseJson.Options), accepted.Actor);
                 var userLogin = auth.Authenticate("user@acceptance.local", "UserPass!2026");
-                if (!passwordConfigured.Success || !userLogin.PasswordVerified || !userLogin.RequiresMfaEnrollment) throw new InvalidOperationException("Le compte créé n'est pas utilisable avec le mot de passe initial et l'enrôlement MFA.");
-                return "PBKDF2 + TOTP; création utilisateur; aucun acteur avant le second facteur; secrets hors snapshot";
+                if (!passwordConfigured.Success || !userLogin.Success || !userLogin.PasswordVerified) throw new InvalidOperationException("Le compte créé n'est pas utilisable avec le mot de passe initial.");
+                return "PBKDF2; création utilisateur; secrets hors snapshot; audit de connexion";
             });
             Check(report, "reconciliation.cancelled-state-cannot-resurrect", () =>
             {
@@ -1150,7 +1147,7 @@ public sealed class EnterpriseEngine
                 var user = data.Users.FirstOrDefault(x => x.Email.Equals(normalizedEmail, StringComparison.OrdinalIgnoreCase))
                     ?? data.Users.FirstOrDefault(x => x.RoleIds.Contains(role.Id) && string.IsNullOrWhiteSpace(x.PasswordHash));
                 if (user is null) { user = new EnterpriseUser { Id = Guid.NewGuid(), CreatedAt = clock() }; data.Users.Add(user); }
-                user.Email = normalizedEmail; user.DisplayName = normalizedName; user.IsActive = true; user.MfaEnabled = false;
+                user.Email = normalizedEmail; user.DisplayName = normalizedName; user.IsActive = true;
                 user.RoleIds = new List<Guid> { role.Id }; user.CompanyIds = data.Companies.Select(x => x.Id).ToList(); user.PasswordHash = HashPassword(password); user.MustChangePassword = false;
                 AddAudit("User", user.Id.ToString("D"), null, "FirstAdministratorConfigured", null, user.Email, null, EnterpriseActor.System); SaveUnsafe(); return SanitizeUser(user);
             }
@@ -1173,45 +1170,9 @@ public sealed class EnterpriseEngine
             }
             user!.LastLoginAt = clock();
             var actor = new EnterpriseActor(user.Id, user.DisplayName, "local");
-            var requiresMfa = data.Settings.RequireMfa || user.MfaEnabled;
-            if (requiresMfa)
-            {
-                var requiresEnrollment = string.IsNullOrWhiteSpace(user.MfaSecretBase32) || !user.MfaConfirmedAt.HasValue;
-                var token = CreateAuthenticationChallenge(user.Id, requiresEnrollment ? "Enrollment" : "Mfa");
-                AddAudit("Authentication", user.Id.ToString("D"), null, requiresEnrollment ? "PasswordVerifiedEnrollmentRequired" : "PasswordVerifiedMfaRequired", null, null, null, actor); SaveUnsafe();
-                return new EnterpriseAuthenticationResult { Success = false, PasswordVerified = true, Message = requiresEnrollment ? "Mot de passe vérifié; enrôlement MFA requis." : "Mot de passe vérifié; code MFA requis.", User = SanitizeUser(user), Actor = null, RequiresMfa = true, RequiresMfaEnrollment = requiresEnrollment, ChallengeToken = token };
-            }
             AddAudit("Authentication", user.Id.ToString("D"), null, "Authenticated", null, null, null, actor); SaveUnsafe();
             return new EnterpriseAuthenticationResult { Success = true, PasswordVerified = true, Message = "Authentification réussie.", User = SanitizeUser(user), Actor = actor };
         }
-    }
-
-    public EnterpriseMfaEnrollment BeginMfaEnrollment(string challengeToken)
-    {
-        lock (sync)
-        {
-            var challenge = RequireAuthenticationChallenge(challengeToken, "Enrollment");
-            var user = data.Users.FirstOrDefault(x => x.Id == challenge.UserId && x.IsActive) ?? throw new EnterpriseValidationException("Utilisateur introuvable ou inactif.");
-            var checkpoint = Checkpoint();
-            try
-            {
-                user.MfaSecretBase32 = Base32Encode(RandomNumberGenerator.GetBytes(20)); user.MfaConfirmedAt = null; user.LastMfaCounter = null; user.MfaEnabled = false;
-                var issuer = Uri.EscapeDataString("KAY ONE"); var account = Uri.EscapeDataString(user.Email); var secret = user.MfaSecretBase32;
-                AddAudit("User", user.Id.ToString("D"), null, "MfaEnrollmentStarted", null, null, null, new EnterpriseActor(user.Id, user.DisplayName, "local")); SaveUnsafe();
-                return new EnterpriseMfaEnrollment { UserId = user.Id, SecretBase32 = secret, OtpAuthUri = $"otpauth://totp/{issuer}:{account}?secret={secret}&issuer={issuer}&algorithm=SHA1&digits=6&period=30", ExpiresAt = challenge.ExpiresAt };
-            }
-            catch { data = checkpoint; throw; }
-        }
-    }
-
-    public EnterpriseAuthenticationResult ConfirmMfaEnrollment(string challengeToken, string code)
-    {
-        lock (sync) return CompleteMfaChallenge(challengeToken, code, "Enrollment", confirmEnrollment: true);
-    }
-
-    public EnterpriseAuthenticationResult VerifyMfaChallenge(string challengeToken, string code)
-    {
-        lock (sync) return CompleteMfaChallenge(challengeToken, code, "Mfa", confirmEnrollment: false);
     }
 
     public IReadOnlyList<ExpirationAlert> GetExpirationAlerts(DateOnly? asOf = null)
@@ -1371,7 +1332,7 @@ public sealed class EnterpriseEngine
         if (companyIds.Count == 0 && JsonGuid(payload, "companyId") is Guid companyId) companyIds.Add(companyId);
         if (companyIds.Count == 0 && JsonText(payload, "company") is string companyText) companyIds.Add(ResolveCompanyId(companyText));
         if (companyIds.Count == 0) throw new EnterpriseValidationException("Au moins une société autorisée est requise.");
-        return UpsertUser(new EnterpriseUser { Email = JsonText(payload, "email") ?? throw new EnterpriseValidationException("E-mail requis."), DisplayName = JsonText(payload, "displayName", "name") ?? throw new EnterpriseValidationException("Nom utilisateur requis."), IsActive = JsonBool(payload, "isActive") ?? true, MfaEnabled = false, MustChangePassword = true, RoleIds = roleIds, CompanyIds = companyIds }, actor);
+        return UpsertUser(new EnterpriseUser { Email = JsonText(payload, "email") ?? throw new EnterpriseValidationException("E-mail requis."), DisplayName = JsonText(payload, "displayName", "name") ?? throw new EnterpriseValidationException("Nom utilisateur requis."), IsActive = JsonBool(payload, "isActive") ?? true, MustChangePassword = true, RoleIds = roleIds, CompanyIds = companyIds }, actor);
     }
 
     private object SetUserPasswordFromJson(JsonElement payload, EnterpriseActor actor)
@@ -1426,18 +1387,6 @@ public sealed class EnterpriseEngine
             SaveUnsafe();
         }
         return new { reconciled, unmatched };
-    }
-
-    private EnterpriseSettings ToggleMfa(JsonElement payload, EnterpriseActor actor)
-    {
-        lock (sync)
-        {
-            DemandPermission(actor, EnterprisePermission.ManageSecurity);
-            var enabled = JsonBool(payload, "enabled") ?? !data.Settings.RequireMfa;
-            data.Settings.RequireMfa = enabled; data.Settings.UpdatedAt = clock(); data.Settings.UpdatedByUserId = actor.UserId;
-            foreach (var user in data.Users.Where(x => x.IsActive)) user.MfaEnabled = enabled;
-            AddAudit("Settings", "security", null, "MfaPolicyChanged", (!enabled).ToString(), enabled.ToString(), null, actor); SaveUnsafe(); return data.Settings;
-        }
     }
 
     private EnterpriseRole SaveSecurity(JsonElement payload, EnterpriseActor actor)
@@ -1981,7 +1930,7 @@ public sealed class EnterpriseEngine
         value = default; return false;
     }
     private static decimal? PercentRate(decimal? value) => value.HasValue ? (value.Value > 1 ? value.Value / 100m : value.Value) : null;
-    private static bool MutatingAction(string action) => action is "save-enterprise-operation" or "submit-operation" or "validate-operation" or "post-operation" or "cancel-operation" or "create-client" or "create-supplier" or "create-contract" or "create-import" or "create-certificate" or "create-role" or "create-user" or "set-user-password" or "save-import-costing" or "prepare-payment" or "approve-payment" or "cancel-payment" or "undo-reconciliation" or "reconcile-selected" or "toggle-mfa" or "save-security" or "resolve-sod" or "generate-commitments" or "save-commission-rule" or "calculate-commissions" or "run-depreciation" or "save-cash-box" or "save-cash-movement" or "save-tax-rule" or "toggle-tax-rule" or "submit-document-upload" or "run-document-ocr" or "save-master-record" or "submit-master-import" or "run-aged-actions";
+    private static bool MutatingAction(string action) => action is "save-enterprise-operation" or "submit-operation" or "validate-operation" or "post-operation" or "cancel-operation" or "create-client" or "create-supplier" or "create-contract" or "create-import" or "create-certificate" or "create-role" or "create-user" or "set-user-password" or "save-import-costing" or "prepare-payment" or "approve-payment" or "cancel-payment" or "undo-reconciliation" or "reconcile-selected" or "save-security" or "resolve-sod" or "generate-commitments" or "save-commission-rule" or "calculate-commissions" or "run-depreciation" or "save-cash-box" or "save-cash-movement" or "save-tax-rule" or "toggle-tax-rule" or "submit-document-upload" or "run-document-ocr" or "save-master-record" or "submit-master-import" or "run-aged-actions";
     private static string ActionMessage(string action, object? result) => action switch { "save-enterprise-operation" => "Opération enregistrée et impacts générés.", "submit-operation" => "Opération soumise au contrôle.", "validate-operation" => "Opération validée.", "post-operation" => "Opération comptabilisée.", "cancel-operation" => "Opération annulée avec traçabilité.", "check-certificate-balance" => "Solde d'exonération vérifié.", "verify-audit-integrity" => "Intégrité de la chaîne d'audit vérifiée.", _ when result is not null => "Action exécutée et persistée.", _ => "Action traitée." };
 
     private BusinessOperation CreateOperationUnsafe(CreateBusinessOperationRequest request, EnterpriseActor actor, bool save)
@@ -2298,8 +2247,8 @@ public sealed class EnterpriseEngine
         var adminRole = new EnterpriseRole { Id = Guid.NewGuid(), Name = "Administrateur", Description = "Administration complète", Permissions = Enum.GetValues<EnterprisePermission>().Where(x => x != EnterprisePermission.None).ToList() };
         var accountantRole = new EnterpriseRole { Id = Guid.NewGuid(), Name = "Comptable", Description = "Saisie, fiscalité et comptabilisation", Permissions = new List<EnterprisePermission> { EnterprisePermission.View, EnterprisePermission.CreateOperation, EnterprisePermission.EditOperation, EnterprisePermission.SubmitOperation, EnterprisePermission.PostAccounting, EnterprisePermission.CreatePayment, EnterprisePermission.ReconcileBank, EnterprisePermission.ImportBankStatement } };
         data.Roles.AddRange(new[] { adminRole, accountantRole });
-        var admin = new EnterpriseUser { Id = Guid.NewGuid(), Email = "admin@kayone.ma", DisplayName = "Administrateur KAY", IsActive = true, MfaEnabled = true, RoleIds = new List<Guid> { adminRole.Id }, CompanyIds = new List<Guid> { company.Id, company2.Id }, CreatedAt = clock(), MustChangePassword = true };
-        var maker = new EnterpriseUser { Id = Guid.NewGuid(), Email = "comptable@kayone.ma", DisplayName = "Comptable KAY", IsActive = true, MfaEnabled = true, RoleIds = new List<Guid> { accountantRole.Id }, CompanyIds = new List<Guid> { company.Id }, CreatedAt = clock(), MustChangePassword = true };
+        var admin = new EnterpriseUser { Id = Guid.NewGuid(), Email = "admin@kayone.ma", DisplayName = "Administrateur KAY", IsActive = true, RoleIds = new List<Guid> { adminRole.Id }, CompanyIds = new List<Guid> { company.Id, company2.Id }, CreatedAt = clock(), MustChangePassword = true };
+        var maker = new EnterpriseUser { Id = Guid.NewGuid(), Email = "comptable@kayone.ma", DisplayName = "Comptable KAY", IsActive = true, RoleIds = new List<Guid> { accountantRole.Id }, CompanyIds = new List<Guid> { company.Id }, CreatedAt = clock(), MustChangePassword = true };
         data.Users.AddRange(new[] { admin, maker });
         var systemActor = EnterpriseActor.System;
 
@@ -2340,7 +2289,7 @@ public sealed class EnterpriseEngine
         data.TaxRules ??= new(); data.TaxImpacts ??= new(); data.ExchangeRates ??= new(); data.AccountingEntries ??= new(); data.TreasuryMovements ??= new();
         data.BankAccounts ??= new(); data.CashBoxes ??= new(); data.CashMovements ??= new(); data.BankStatements ??= new(); data.BankOperations ??= new(); data.Reconciliations ??= new();
         data.ExemptionCertificates ??= new(); data.Contracts ??= new(); data.Commitments ??= new(); data.ImportFiles ??= new(); data.CommissionRules ??= new(); data.Commissions ??= new(); data.FixedAssets ??= new(); data.DepreciationEntries ??= new(); data.MasterImports ??= new(); data.CollectionActions ??= new(); data.ReportingFacts ??= new();
-        data.Roles ??= new(); data.Users ??= new(); data.AuthenticationChallenges ??= new(); data.AuditLog ??= new();
+        data.Roles ??= new(); data.Users ??= new(); data.AuditLog ??= new();
         data.Settings ??= new EnterpriseSettings();
         foreach (var document in data.Documents)
         {
@@ -2564,74 +2513,7 @@ public sealed class EnterpriseEngine
         }
         catch (FormatException) { return false; }
     }
-    private string CreateAuthenticationChallenge(Guid userId, string purpose)
-    {
-        data.AuthenticationChallenges.RemoveAll(x => x.ExpiresAt <= clock() || x.UserId == userId);
-        var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)).TrimEnd('=').Replace('+', '-').Replace('/', '_');
-        data.AuthenticationChallenges.Add(new EnterpriseAuthenticationChallenge { Id = Guid.NewGuid(), UserId = userId, TokenHash = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(token))), Purpose = purpose, CreatedAt = clock(), ExpiresAt = clock().AddMinutes(5) });
-        return token;
-    }
-    private EnterpriseAuthenticationChallenge RequireAuthenticationChallenge(string token, string purpose)
-    {
-        if (string.IsNullOrWhiteSpace(token)) throw new EnterpriseAuthorizationException("Challenge d'authentification manquant.");
-        var actual = SHA256.HashData(Encoding.UTF8.GetBytes(token));
-        foreach (var challenge in data.AuthenticationChallenges.Where(x => x.Purpose == purpose && x.ExpiresAt > clock() && x.FailedAttempts < 5))
-        {
-            byte[] expected; try { expected = Convert.FromBase64String(challenge.TokenHash); } catch (FormatException) { continue; }
-            if (actual.Length == expected.Length && CryptographicOperations.FixedTimeEquals(actual, expected)) return challenge;
-        }
-        throw new EnterpriseAuthorizationException("Challenge d'authentification invalide ou expiré.");
-    }
-    private EnterpriseAuthenticationResult CompleteMfaChallenge(string challengeToken, string code, string purpose, bool confirmEnrollment)
-    {
-        var challenge = RequireAuthenticationChallenge(challengeToken, purpose);
-        var user = data.Users.FirstOrDefault(x => x.Id == challenge.UserId && x.IsActive) ?? throw new EnterpriseAuthorizationException("Utilisateur introuvable ou inactif.");
-        var actor = new EnterpriseActor(user.Id, user.DisplayName, "local");
-        if (string.IsNullOrWhiteSpace(user.MfaSecretBase32) || !VerifyTotp(user.MfaSecretBase32, code, user.LastMfaCounter, out var counter))
-        {
-            challenge.FailedAttempts++; AddAudit("Authentication", user.Id.ToString("D"), null, "MfaFailed", null, null, $"Tentative {challenge.FailedAttempts}/5", actor);
-            if (challenge.FailedAttempts >= 5) data.AuthenticationChallenges.Remove(challenge); SaveUnsafe();
-            return new EnterpriseAuthenticationResult { Success = false, PasswordVerified = true, RequiresMfa = true, Message = "Code MFA incorrect ou déjà utilisé." };
-        }
-        user.LastMfaCounter = counter; user.MfaEnabled = true; if (confirmEnrollment) user.MfaConfirmedAt = clock();
-        data.AuthenticationChallenges.RemoveAll(x => x.UserId == user.Id); user.LastLoginAt = clock();
-        AddAudit("Authentication", user.Id.ToString("D"), null, confirmEnrollment ? "MfaEnrollmentConfirmed" : "MfaAuthenticated", null, null, null, actor); SaveUnsafe();
-        return new EnterpriseAuthenticationResult { Success = true, PasswordVerified = true, RequiresMfa = false, Message = "Authentification multifacteur réussie.", User = SanitizeUser(user), Actor = actor };
-    }
-    private bool VerifyTotp(string secretBase32, string code, long? lastCounter, out long acceptedCounter)
-    {
-        acceptedCounter = -1;
-        var normalizedCode = new string((code ?? string.Empty).Where(char.IsDigit).ToArray()); if (normalizedCode.Length != 6) return false;
-        byte[] secret; try { secret = Base32Decode(secretBase32); } catch (FormatException) { return false; }
-        var currentCounter = clock().ToUnixTimeSeconds() / 30;
-        for (var offset = -1; offset <= 1; offset++)
-        {
-            var counter = currentCounter + offset; if (lastCounter.HasValue && counter <= lastCounter.Value) continue;
-            var expected = GenerateTotp(secret, counter);
-            if (CryptographicOperations.FixedTimeEquals(Encoding.ASCII.GetBytes(expected), Encoding.ASCII.GetBytes(normalizedCode))) { acceptedCounter = counter; return true; }
-        }
-        return false;
-    }
-    private static string GenerateTotp(byte[] secret, long counter)
-    {
-        Span<byte> counterBytes = stackalloc byte[8]; for (var i = 7; i >= 0; i--) { counterBytes[i] = (byte)(counter & 0xff); counter >>= 8; }
-        var hash = HMACSHA1.HashData(secret, counterBytes); var offset = hash[^1] & 0x0f;
-        var binary = ((hash[offset] & 0x7f) << 24) | ((hash[offset + 1] & 0xff) << 16) | ((hash[offset + 2] & 0xff) << 8) | (hash[offset + 3] & 0xff);
-        return (binary % 1_000_000).ToString("D6", CultureInfo.InvariantCulture);
-    }
-    private static string Base32Encode(byte[] bytes)
-    {
-        const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"; var output = new StringBuilder(); var buffer = 0; var bits = 0;
-        foreach (var value in bytes) { buffer = (buffer << 8) | value; bits += 8; while (bits >= 5) { bits -= 5; output.Append(alphabet[(buffer >> bits) & 31]); } }
-        if (bits > 0) output.Append(alphabet[(buffer << (5 - bits)) & 31]); return output.ToString();
-    }
-    private static byte[] Base32Decode(string value)
-    {
-        const string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"; var bytes = new List<byte>(); var buffer = 0; var bits = 0;
-        foreach (var character in value.ToUpperInvariant().Where(x => !char.IsWhiteSpace(x) && x != '=')) { var index = alphabet.IndexOf(character); if (index < 0) throw new FormatException("Secret Base32 invalide."); buffer = (buffer << 5) | index; bits += 5; if (bits >= 8) { bits -= 8; bytes.Add((byte)((buffer >> bits) & 0xff)); } }
-        return bytes.ToArray();
-    }
-    private static EnterpriseUser SanitizeUser(EnterpriseUser user) => new() { Id = user.Id, Email = user.Email, DisplayName = user.DisplayName, IsActive = user.IsActive, MfaEnabled = user.MfaEnabled, MfaConfirmedAt = user.MfaConfirmedAt, MustChangePassword = user.MustChangePassword, RoleIds = user.RoleIds.ToList(), CompanyIds = user.CompanyIds.ToList(), CreatedAt = user.CreatedAt, LastLoginAt = user.LastLoginAt, PasswordHash = null, MfaSecretBase32 = null, LastMfaCounter = null };
+    private static EnterpriseUser SanitizeUser(EnterpriseUser user) => new() { Id = user.Id, Email = user.Email, DisplayName = user.DisplayName, IsActive = user.IsActive, MustChangePassword = user.MustChangePassword, RoleIds = user.RoleIds.ToList(), CompanyIds = user.CompanyIds.ToList(), CreatedAt = user.CreatedAt, LastLoginAt = user.LastLoginAt, PasswordHash = null };
     private string PartyName(Guid? id) => data.Parties.FirstOrDefault(x => x.Id == id)?.Name ?? "—";
     private Guid? OperationCompany(Guid? id) => data.Operations.FirstOrDefault(x => x.Id == id)?.CompanyId;
     private Guid? OperationParty(Guid? id) => data.Operations.FirstOrDefault(x => x.Id == id)?.PartyId;
@@ -2660,7 +2542,7 @@ public sealed class EnterpriseEngine
     private static void CopyContract(EnterpriseContract s, EnterpriseContract d) { d.Reference = s.Reference; d.CompanyId = s.CompanyId; d.PartyId = s.PartyId; d.Title = s.Title; d.Category = s.Category; d.StartDate = s.StartDate; d.EndDate = s.EndDate; d.BaseAmountMad = s.BaseAmountMad; d.FrequencyMonths = s.FrequencyMonths; d.RevisionPercent = s.RevisionPercent; d.RevisionEveryYears = s.RevisionEveryYears; d.Status = s.Status; d.DocumentStorageKey = s.DocumentStorageKey; d.SpecialTerms = s.SpecialTerms; }
     private static void CopyImportFile(EnterpriseImportFile s, EnterpriseImportFile d) { d.Reference = s.Reference; d.CompanyId = s.CompanyId; d.SupplierId = s.SupplierId; d.OpenedDate = s.OpenedDate; d.Currency = s.Currency; d.SupplierInvoiceAmount = s.SupplierInvoiceAmount; d.SupplierInvoiceMad = s.SupplierInvoiceMad; d.Costs = s.Costs.ToList(); d.TotalAcquisitionCostMad = s.TotalAcquisitionCostMad; d.AllocationRule = s.AllocationRule; d.Status = s.Status; d.DocumentKeys = s.DocumentKeys.ToList(); }
     private static void CopyTaxRule(EnterpriseTaxRule s, EnterpriseTaxRule d) { d.Code = s.Code; d.Kind = s.Kind; d.Name = s.Name; d.Rate = s.Rate; d.EffectiveFrom = s.EffectiveFrom; d.EffectiveTo = s.EffectiveTo; d.OperationTypes = s.OperationTypes.ToList(); d.NatureContains = s.NatureContains; d.RegulatoryReference = s.RegulatoryReference; d.Priority = s.Priority; d.IsActive = s.IsActive; }
-    private static void CopyUser(EnterpriseUser s, EnterpriseUser d) { d.Email = s.Email; d.DisplayName = s.DisplayName; d.IsActive = s.IsActive; d.MfaEnabled = s.MfaEnabled; d.MustChangePassword = s.MustChangePassword; d.RoleIds = s.RoleIds.ToList(); d.CompanyIds = s.CompanyIds.ToList(); if (!string.IsNullOrWhiteSpace(s.PasswordHash)) d.PasswordHash = s.PasswordHash; }
+    private static void CopyUser(EnterpriseUser s, EnterpriseUser d) { d.Email = s.Email; d.DisplayName = s.DisplayName; d.IsActive = s.IsActive; d.MustChangePassword = s.MustChangePassword; d.RoleIds = s.RoleIds.ToList(); d.CompanyIds = s.CompanyIds.ToList(); if (!string.IsNullOrWhiteSpace(s.PasswordHash)) d.PasswordHash = s.PasswordHash; }
     private readonly record struct TaxCalculation(decimal VatRate, decimal VatAmountMad, decimal WithholdingRate, decimal WithholdingAmountMad, decimal TotalMad, decimal NetPayableMad);
 }
 
@@ -2758,7 +2640,6 @@ public sealed class EnterpriseDatabase
     public List<EnterpriseReportingFact> ReportingFacts { get; set; } = new();
     public List<EnterpriseRole> Roles { get; set; } = new();
     public List<EnterpriseUser> Users { get; set; } = new();
-    public List<EnterpriseAuthenticationChallenge> AuthenticationChallenges { get; set; } = new();
     public List<EnterpriseAuditLog> AuditLog { get; set; } = new();
     public EnterpriseSettings Settings { get; set; } = new();
 }
@@ -2954,9 +2835,8 @@ public sealed class EnterpriseCollectionAction { public Guid Id { get; set; } pu
 public sealed class EnterpriseReportingFact { public Guid Id { get; set; } public Guid OperationId { get; set; } public DateOnly Date { get; set; } public Guid CompanyId { get; set; } public Guid? SiteId { get; set; } public Guid? LaboratoryId { get; set; } public Guid? ActivityId { get; set; } public Guid? CostCenterId { get; set; } public Guid? ProjectId { get; set; } public Guid? PartyId { get; set; } public decimal RevenueMad { get; set; } public decimal ExpenseMad { get; set; } public decimal TaxMad { get; set; } public decimal CashImpactMad { get; set; } public ImpactState Status { get; set; } = ImpactState.Generated; }
 
 public sealed class EnterpriseRole { public Guid Id { get; set; } public string Name { get; set; } = ""; public string? Description { get; set; } public List<EnterprisePermission> Permissions { get; set; } = new(); }
-public sealed class EnterpriseUser { public Guid Id { get; set; } public string Email { get; set; } = ""; public string DisplayName { get; set; } = ""; public string? PasswordHash { get; set; } public string? MfaSecretBase32 { get; set; } public DateTimeOffset? MfaConfirmedAt { get; set; } public long? LastMfaCounter { get; set; } public bool IsActive { get; set; } = true; public bool MfaEnabled { get; set; } public bool MustChangePassword { get; set; } = true; public List<Guid> RoleIds { get; set; } = new(); public List<Guid> CompanyIds { get; set; } = new(); public DateTimeOffset CreatedAt { get; set; } public DateTimeOffset? LastLoginAt { get; set; } }
-public sealed class EnterpriseAuthenticationChallenge { public Guid Id { get; set; } public Guid UserId { get; set; } public string TokenHash { get; set; } = ""; public string Purpose { get; set; } = "Mfa"; public DateTimeOffset ExpiresAt { get; set; } public int FailedAttempts { get; set; } public DateTimeOffset CreatedAt { get; set; } }
-public sealed class EnterpriseSettings { public bool RequireMfa { get; set; } = true; public int SessionTimeoutMinutes { get; set; } = 30; public bool RequireMakerChecker { get; set; } = true; public decimal MaxReconciliationDifferenceMad { get; set; } = 1m; public int BackupRetentionDays { get; set; } = 30; public string BaseCurrency { get; set; } = "MAD"; public DateTimeOffset UpdatedAt { get; set; } public Guid? UpdatedByUserId { get; set; } }
+public sealed class EnterpriseUser { public Guid Id { get; set; } public string Email { get; set; } = ""; public string DisplayName { get; set; } = ""; public string? PasswordHash { get; set; } public bool IsActive { get; set; } = true; public bool MustChangePassword { get; set; } = true; public List<Guid> RoleIds { get; set; } = new(); public List<Guid> CompanyIds { get; set; } = new(); public DateTimeOffset CreatedAt { get; set; } public DateTimeOffset? LastLoginAt { get; set; } }
+public sealed class EnterpriseSettings { public int SessionTimeoutMinutes { get; set; } = 30; public bool RequireMakerChecker { get; set; } = true; public decimal MaxReconciliationDifferenceMad { get; set; } = 1m; public int BackupRetentionDays { get; set; } = 30; public string BaseCurrency { get; set; } = "MAD"; public DateTimeOffset UpdatedAt { get; set; } public Guid? UpdatedByUserId { get; set; } }
 public sealed class EnterpriseAuditLog { public Guid Id { get; set; } public long Sequence { get; set; } public DateTimeOffset OccurredAt { get; set; } public string EntityType { get; set; } = ""; public string EntityId { get; set; } = ""; public Guid? OperationId { get; set; } public string Action { get; set; } = ""; public Guid? ActorUserId { get; set; } public string ActorDisplayName { get; set; } = ""; public string? IpAddress { get; set; } public string? BeforeJson { get; set; } public string? AfterJson { get; set; } public string? Reason { get; set; } public string PreviousHash { get; set; } = ""; public string Hash { get; set; } = ""; }
 
 public sealed class EnterpriseSnapshot
@@ -2975,8 +2855,7 @@ public sealed class EnterpriseSearchFilter { public decimal? ExactAmountMad { ge
 public sealed class EnterpriseSearchResult { public string Kind { get; set; } = ""; public string EntityId { get; set; } = ""; public Guid? OperationId { get; set; } public string Title { get; set; } = ""; public string Subtitle { get; set; } = ""; public decimal? Amount { get; set; } public string? Currency { get; set; } public string Route { get; set; } = ""; public int Score { get; set; } }
 public sealed class ExpirationAlert { public string Kind { get; set; } = ""; public Guid EntityId { get; set; } public string Reference { get; set; } = ""; public DateOnly ExpirationDate { get; set; } public int DaysRemaining { get; set; } public string Threshold { get; set; } = ""; public string RequiredAction { get; set; } = ""; }
 public sealed class EnterpriseActionResult { public bool Success { get; set; } public string Action { get; set; } = ""; public string Message { get; set; } = ""; public string? ErrorCode { get; set; } public object? Data { get; set; } public EnterpriseSnapshot? Snapshot { get; set; } }
-public sealed class EnterpriseAuthenticationResult { public bool Success { get; set; } public bool PasswordVerified { get; set; } public string Message { get; set; } = ""; public EnterpriseUser? User { get; set; } public EnterpriseActor? Actor { get; set; } public bool RequiresMfa { get; set; } public bool RequiresMfaEnrollment { get; set; } public string? ChallengeToken { get; set; } }
-public sealed class EnterpriseMfaEnrollment { public Guid UserId { get; set; } public string SecretBase32 { get; set; } = ""; public string OtpAuthUri { get; set; } = ""; public DateTimeOffset ExpiresAt { get; set; } }
+public sealed class EnterpriseAuthenticationResult { public bool Success { get; set; } public bool PasswordVerified { get; set; } public string Message { get; set; } = ""; public EnterpriseUser? User { get; set; } public EnterpriseActor? Actor { get; set; } }
 public sealed class EnterpriseAcceptanceReport { public DateTimeOffset StartedAt { get; set; } public DateTimeOffset FinishedAt { get; set; } public List<EnterpriseAcceptanceCheck> Checks { get; set; } = new(); public int Total => Checks.Count; public int Passed => Checks.Count(x => x.Passed); public bool Success => Total > 0 && Total == Passed; }
 public sealed class EnterpriseAcceptanceCheck { public string Name { get; set; } = ""; public bool Passed { get; set; } public string Detail { get; set; } = ""; }
 

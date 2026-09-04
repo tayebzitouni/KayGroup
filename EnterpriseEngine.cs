@@ -348,11 +348,10 @@ public sealed class EnterpriseEngine
                 secure.SubmitOperation(op.Id, null, maker);
                 secure.ValidateOperation(op.Id, null, maker);
                 if (secure.GetOperation(op.Id)?.Status != OperationLifecycle.Validated) throw new InvalidOperationException("Le créateur ne peut pas valider sa propre opération.");
-                secure.ValidateOperation(op.Id, null, checker);
                 var prepared = secure.PreparePayment(new RegisterPaymentRequest { OperationId = op.Id, PaymentDate = DateOnly.FromDateTime(clock().LocalDateTime), Amount = 1200, Currency = "MAD", BankAccountId = s.BankAccounts.First(x => x.CompanyId == s.Companies[0].Id && x.Currency == "MAD").Id }, maker);
                 try { secure.ApprovePayment(prepared.Id, null, maker); throw new InvalidOperationException("Le préparateur a validé son paiement."); } catch (EnterpriseValidationException ex) when (ex.Message.Contains("Séparation", StringComparison.OrdinalIgnoreCase)) { }
                 var executed = secure.ApprovePayment(prepared.Id, "Validation indépendante", checker); if (executed.Status != PaymentStatus.Executed) throw new InvalidOperationException("Paiement non exécuté après validation.");
-                return "Maker-checker opération et paiement appliqué";
+                return "Auto-validation opération autorisée; maker-checker paiement appliqué";
             });
             Check(report, "security.password-authentication", () =>
             {
@@ -2507,7 +2506,7 @@ public sealed class EnterpriseEngine
         var facts = snapshot.ReportingFacts.Where(x => x.Status is not (ImpactState.Cancelled or ImpactState.Superseded) && operationIds.Contains(x.OperationId) && IsFinanciallyActiveOperation(x.OperationId)).ToArray();
         return new EnterpriseDashboardMetrics
         {
-            RevenueMad = Round(facts.Sum(x => x.RevenueMad)), ExpensesMad = Round(facts.Sum(x => x.ExpenseMad)), MarginMad = Round(facts.Sum(x => x.RevenueMad - x.ExpenseMad)),
+            RevenueMad = Round(facts.Sum(x => x.RevenueMad)), ExpensesMad = Round(facts.Sum(x => x.ExpenseMad)), MarginMad = Round(facts.Sum(x => x.RevenueMad - x.ExpenseMad)), ProfitBeforeTaxMad = Round(facts.Sum(x => x.RevenueMad - x.ExpenseMad)),
             CashBalanceMad = Round(snapshot.BankAccounts.Sum(x => x.BalanceMad) + snapshot.CashBoxes.Sum(x => x.BalanceMad)),
             ReceivablesMad = Round(snapshot.DueItems.Where(x => x.Kind == DueKind.Receivable && x.Status is DueStatus.Open or DueStatus.PartiallyPaid).Where(x => IsFinanciallyActiveOperation(x.OperationId)).Sum(x => x.OutstandingMad)),
             PayablesMad = Round(snapshot.DueItems.Where(x => x.Kind == DueKind.Debt && x.Status is DueStatus.Open or DueStatus.PartiallyPaid).Where(x => IsFinanciallyActiveOperation(x.OperationId)).Sum(x => x.OutstandingMad)),

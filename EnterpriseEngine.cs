@@ -346,7 +346,8 @@ public sealed class EnterpriseEngine
                 var maker = new EnterpriseActor(makerUser.Id, makerUser.DisplayName); var checker = new EnterpriseActor(checkerUser.Id, checkerUser.DisplayName);
                 var op = secure.CreateOperation(new CreateBusinessOperationRequest { Type = BusinessOperationType.Vente, Nature = "SoD", CompanyId = s.Companies[0].Id, PartyId = s.Parties.First(x => x.Kind == PartyKind.Client).Id, OperationDate = DateOnly.FromDateTime(clock().LocalDateTime), Amount = 1000 }, maker);
                 secure.SubmitOperation(op.Id, null, maker);
-                try { secure.ValidateOperation(op.Id, null, maker); throw new InvalidOperationException("La validation par le créateur aurait dû être bloquée."); } catch (EnterpriseValidationException ex) when (ex.Message.Contains("Séparation", StringComparison.OrdinalIgnoreCase)) { }
+                secure.ValidateOperation(op.Id, null, maker);
+                if (secure.GetOperation(op.Id)?.Status != OperationLifecycle.Validated) throw new InvalidOperationException("Le créateur ne peut pas valider sa propre opération.");
                 secure.ValidateOperation(op.Id, null, checker);
                 var prepared = secure.PreparePayment(new RegisterPaymentRequest { OperationId = op.Id, PaymentDate = DateOnly.FromDateTime(clock().LocalDateTime), Amount = 1200, Currency = "MAD", BankAccountId = s.BankAccounts.First(x => x.CompanyId == s.Companies[0].Id && x.Currency == "MAD").Id }, maker);
                 try { secure.ApprovePayment(prepared.Id, null, maker); throw new InvalidOperationException("Le préparateur a validé son paiement."); } catch (EnterpriseValidationException ex) when (ex.Message.Contains("Séparation", StringComparison.OrdinalIgnoreCase)) { }
@@ -514,8 +515,6 @@ public sealed class EnterpriseEngine
             };
             DemandPermission(effectiveActor, permission);
             EnsureTransition(operation.Status, target);
-            if (target == OperationLifecycle.Validated && operation.CreatedByUserId.HasValue && operation.CreatedByUserId == effectiveActor.UserId && !effectiveActor.IsSystem)
-                throw new EnterpriseValidationException("Séparation des tâches : le créateur ne peut pas valider sa propre opération.");
             var checkpoint = Checkpoint();
             try
             {

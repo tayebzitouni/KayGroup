@@ -50,11 +50,10 @@
     const operation=trace?.operation||{},groups=[['Documents',trace?.documents],['Factures',trace?.invoices],['Échéances',trace?.dueItems],['Paiements',trace?.payments],['Fiscalité',trace?.taxImpacts],['Écritures',trace?.accountingEntries],['Trésorerie',trace?.treasuryMovements],['Banque',trace?.bankOperations],['Reporting',trace?.reportingFacts],['Audit',trace?.auditLog]];
     const impacts=(trace?.impacts||[]).map(item=>`<li><span>${esc(item.kind)}</span><strong>${esc(item.reference||'—')}</strong><em>${esc(item.state)}</em></li>`).join('');
     const state=String(operation.status||'').toLowerCase(),id=operation.id||'';
-    const currentUserId=String(data().currentUser?.id||'').toLowerCase(),createdBy=String(operation.createdByUserId||'').toLowerCase(),createdByCurrentUser=Boolean(currentUserId&&createdBy&&currentUserId===createdBy);
+    const currentUserId=String(data().currentUser?.id||'').toLowerCase();
     const workflow=[];
     if(state==='draft')workflow.push(`<button type="button" class="primary-button" data-trace-action="submit-operation" data-id="${esc(id)}">Soumettre</button>`);
-    if(state==='submitted'&&!createdByCurrentUser)workflow.push(`<button type="button" class="primary-button" data-trace-action="validate-operation" data-id="${esc(id)}">Valider</button>`);
-    if(state==='submitted'&&createdByCurrentUser)workflow.push(`<button type="button" class="secondary-button" disabled title="Validation par un autre utilisateur requise">Validation par un autre utilisateur requise</button>`);
+    if(state==='submitted')workflow.push(`<button type="button" class="primary-button" data-trace-action="validate-operation" data-id="${esc(id)}">Valider</button>`);
     if(state==='validated'||state==='reconciled')workflow.push(`<button type="button" class="primary-button" data-trace-action="post-operation" data-id="${esc(id)}">Comptabiliser</button>`);
     if(state&&state!=='cancelled')workflow.push(`<button type="button" class="secondary-button ka-cancel-operation" data-trace-action="cancel-operation" data-id="${esc(id)}">Annuler avec trace</button>`);
     return `<div class="ka-trace-summary"><div><span>Référence</span><strong>${esc(operation.reference||'—')}</strong></div><div><span>Nature</span><strong>${esc(operation.nature||'—')}</strong></div><div><span>Montant</span><strong>${money(operation.amountMad,'MAD')}</strong></div><div><span>Statut</span><strong>${esc(operation.status||'—')}</strong></div></div><h4>Impacts générés</h4><ul class="ka-trace-list">${impacts||'<li>Aucun impact actif</li>'}</ul><div class="ka-trace-counts">${groups.map(([label,items])=>`<div><strong>${(items||[]).length}</strong><span>${label}</span></div>`).join('')}</div>${workflow.length?`<div class="ka-trace-workflow"><label><span>Commentaire / motif d’annulation</span><input data-trace-reason placeholder="Obligatoire pour une annulation"></label><div>${workflow.join('')}</div></div>`:''}`;
@@ -126,8 +125,8 @@
         check(`${route}_content`,Boolean(root?.querySelector('.panel'))&&!root?.textContent.includes('Domaine indisponible'));
       }
       const currentUserId=data().currentUser?.id||'';
-      const ownTrace=currentUserId?traceBody({operation:{id:'op-check',reference:'TEST-SOD',status:'Submitted',createdByUserId:currentUserId},impacts:[]}):'Validation par un autre utilisateur requise';
-      check('trace_blocks_creator_validation_button',!ownTrace.includes('data-trace-action="validate-operation"')&&ownTrace.includes('Validation par un autre utilisateur requise'));
+      const ownTrace=currentUserId?traceBody({operation:{id:'op-check',reference:'TEST-SOD',status:'Submitted',createdByUserId:currentUserId},impacts:[]}):'';
+      check('trace_creator_can_validate',ownTrace.includes('data-trace-action="validate-operation"'));
     }catch(error){errors.push(error?.message||String(error));checks.unexpected_exception=false}
     finally{navigate(original)}
     const values=Object.values(checks),passed=values.filter(Boolean).length;

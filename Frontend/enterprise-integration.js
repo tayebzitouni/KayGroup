@@ -288,6 +288,7 @@
         check(`page_${key}_bound`, root?.dataset.enterprisePage === route && Boolean(root.__kayEnterpriseController));
         check(`page_${key}_actions`, actions.length > 0 && actions.every(button => Boolean(button.dataset.action) && !button.disabled));
         check(`page_${key}_controls`, (requiredSelectors[route] || []).every(selector => Boolean(root?.querySelector(selector))));
+        if (route === 'reporting') check('reporting_profit_before_tax_excludes_vat_label', !/marge moins impacts fiscaux/i.test(root?.textContent || ''));
 
         const search = root?.querySelector('[data-role="enterprise-search"]');
         const rows = root ? [...root.querySelectorAll('[data-enterprise-row]')] : [];
